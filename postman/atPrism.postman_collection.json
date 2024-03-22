@@ -1,0 +1,3342 @@
+{
+	"info": {
+		"_postman_id": "5df6aaec-5c9d-40a1-a965-924428ec0800",
+		"name": "atPrism",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3411569"
+	},
+	"item": [
+		{
+			"name": "DIDs",
+			"item": [
+				{
+					"name": "did-registrar/dids  [as OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									"pm.environment.set(\"didRef\", _a[0].did);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/did-registrar/dids",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"did-registrar",
+								"dids"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "did-registrar/dids [as AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									"pm.environment.set(\"didRef\", _a[0].did);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/did-registrar/dids",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"did-registrar",
+								"dids"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "dids/<didRef>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/dids/{{didRef}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"dids",
+								"{{didRef}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "dids/<didLong>",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/dids/{{didLong}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"dids",
+								"{{didLong}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "did-registrar/dids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"didLong\", jsonData.longFormDid);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\"documentTemplate\": {\r\n      \"publicKeys\": [\r\n        {\r\n          \"id\": \"auth-1\",\r\n          \"purpose\": \"authentication\"\r\n        }\r\n      ],\r\n      \"services\": []\r\n    }\r\n }"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/did-registrar/dids",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"did-registrar",
+								"dids"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "did-registrar/dids/{{did}}/publications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/did-registrar/dids/{{didLong}}/publications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"did-registrar",
+								"dids",
+								"{{didLong}}",
+								"publications"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "wallets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "x-admin-api-key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/wallets",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"wallets"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "wallets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"seed\": \"ff994785ce6d548134020f610b76102ca1075d3bb672a75ec8c9a27a7b8607e3b9b384e43b77bb08f8d5159651ae38b98573f7ecc79f2d7e1f1cc371ce60cf8a\",\r\n    \"name\": \"wallet for AI 12345\"\r\n  }"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/wallets",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"wallets"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "iam/entities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/iam/entities",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"iam",
+								"entities"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "iam/entities/{{ID}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/iam/entities/{{entity}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"iam",
+								"entities",
+								"{{entity}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "iam/entities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"AI 12345\",\r\n    \"walletId\": \"d5af436a-978f-4b63-86b4-506c9f7484a6\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/iam/entities",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"iam",
+								"entities"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "iam/apikey-authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"entityId\": \"cf17dcfa-c634-4a46-a6d0-2971bb29f957\",\r\n    \"apiKey\": \"my-tenant-token-is-long\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/iam/apikey-authentication",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"iam",
+								"apikey-authentication"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Schema",
+			"item": [
+				{
+					"name": "schema-registry/schemas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/schema-registry/schemas",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"schema-registry",
+								"schemas"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "schema-registry/schemas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"schema_id\", jsonData.id);\r",
+									"pm.environment.set(\"schema_idLong\", jsonData.longId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"origin\",\r\n  \"version\": \"1.0.0\",\r\n  \"description\": \"An AI's attributes\",\r\n  \"type\": \"https://w3c-ccg.github.io/vc-json-schemas/schema/2.0/schema.json\",\r\n  \"author\": \"did:prism:8ac16667169c9ec3a3a2c6a89535a1e73440363583de952de31cb8d980cd9d82\",\r\n  \"tags\": [\r\n    \"AI\",\r\n    \"location\",\r\n    \"gpu\"\r\n  ],\r\n  \"schema\": {\r\n    \"$id\": \"https://opensourceAIs.com/schemas/origin2\",\r\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\r\n    \"description\": \"An AI's transaction's KPIs\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n      \"uid\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"name\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"model\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"repo\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"location\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"gpu\": {\r\n        \"type\": \"string\"\r\n      }\r\n    },\r\n    \"required\": [\r\n      \"uid\",\r\n      \"name\",\r\n      \"model\",\r\n      \"repo\",\r\n      \"location\",\r\n      \"gpu\"\r\n    ],\r\n    \"additionalProperties\": true\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/schema-registry/schemas",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"schema-registry",
+								"schemas"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "schema-registry/{author}/{id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"schema_id\", jsonData.id);\r",
+									"pm.environment.set(\"schema_idLong\", jsonData.longId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"origin\",\r\n  \"version\": \"1.0.5\",\r\n  \"description\": \"Identity of an AI\",\r\n  \"type\": \"https://w3c-ccg.github.io/vc-json-schemas/schema/2.0/schema.json\",\r\n  \"author\": \"did:prism:8ac16667169c9ec3a3a2c6a89535a1e73440363583de952de31cb8d980cd9d82\",\r\n  \"tags\": [\r\n    \"AI\",\r\n    \"location\",\r\n    \"gpu\"\r\n  ],\r\n  \"schema\": {\r\n    \"$id\": \"https://days-alpha-sg-cover.trycloudflare.com/assets/credentials/ai_identity.json\",\r\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\r\n    \"description\": \"Identity of an AI\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n      \"uid\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"name\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"model\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"repo\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"location\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"gpu\": {\r\n        \"type\": \"string\"\r\n      }\r\n    },\r\n    \"required\": [\r\n      \"uid\",\r\n      \"name\",\r\n      \"model\",\r\n      \"repo\",\r\n      \"location\",\r\n      \"gpu\"\r\n    ],\r\n    \"additionalProperties\": true\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/schema-registry/{{didRef}}/7f311487-054b-4e15-97ee-3c9d9182fd8b",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"schema-registry",
+								"{{didRef}}",
+								"7f311487-054b-4e15-97ee-3c9d9182fd8b"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "schema-registry/schemas/guid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/schema-registry/schemas/23a30f8c-e9ca-3776-9c39-a022f0d82e3b",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"schema-registry",
+								"schemas",
+								"23a30f8c-e9ca-3776-9c39-a022f0d82e3b"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "VerifiedCreds",
+			"item": [
+				{
+					"name": "credential-definition-registry/definitions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"schema_id\", jsonData.id);\r",
+									"pm.environment.set(\"schema_idLong\", jsonData.longId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/credential-definition-registry/definitions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"credential-definition-registry",
+								"definitions"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "credential-definition-registry/definitions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"schema_id\", jsonData.id);\r",
+									"pm.environment.set(\"schema_idLong\", jsonData.longId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"origin\",\r\n  \"description\": \"Identity of an AI\",\r\n  \"version\": \"1.0.5\",\r\n  \"tag\": \"AI\",\r\n  \"author\": \"did:prism:8ac16667169c9ec3a3a2c6a89535a1e73440363583de952de31cb8d980cd9d82\",\r\n  \"schemaId\": \"https://days-alpha-sg-cover.trycloudflare.com/assets/credentials/ai_identity.json\",\r\n  \"signatureType\": \"CL\",\r\n  \"supportRevocation\": true\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/credential-definition-registry/definitions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"credential-definition-registry",
+								"definitions"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "issue-credentials/records  [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"pm.environment.set(\"recordAccept\", _a[_a.length-1].recordId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/issue-credentials/records",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"issue-credentials",
+								"records"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "issue-credentials/records/{{id}}  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									"pm.environment.set(\"didRef\", _a[0].did);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/issue-credentials/records/{{recordOffer}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"issue-credentials",
+								"records",
+								"{{recordOffer}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "issue-credentials/records/{{id}} [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									"pm.environment.set(\"didRef\", _a[0].did);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/issue-credentials/records/{{recordAccept}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"issue-credentials",
+								"records",
+								"{{recordAccept}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "issue-credentials/credential-offers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"recordOffer\", jsonData.recordId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"validityPeriod\": 3600,\r\n\"schemaId\": \"https://days-alpha-sg-cover.trycloudflare.com/assets/credentials/ai_identity.json\",\r\n\"credentialDefinitionId\": \"933f2e77-b86a-4bdf-9daf-be6134cc3467\",\r\n\"credentialFormat\": \"JWT\",\r\n\"claims\": {\r\n    \"uid\": \"12345\",\r\n    \"name\": \"Stable Diffusion SDXL\",\r\n    \"model\": \"sd_xl_refiner_1.0.safetensors\",\r\n    \"repo\": \"https://github.com/Stability-AI/generative-models\",\r\n    \"location\": \"https://yahoo-pensions-concerns-quantum.trycloudflare.com/\",\r\n    \"gpu\": \"RTX 3090\"\r\n},\r\n\"automaticIssuance\": false,\r\n\"issuingDID\": \"did:prism:8ac16667169c9ec3a3a2c6a89535a1e73440363583de952de31cb8d980cd9d82\",\r\n\"connectionId\": \"0862ce2a-fd11-4aa1-be6a-51d3ab595e76\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/issue-credentials/credential-offers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"issue-credentials",
+								"credential-offers"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "issue-credentials/records/<id>/accept-offer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									"pm.environment.set(\"didRef\", _a[0].did);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"subjectId\": \"did:prism:6fd56ebf9ea3b2b4bcdaaa29fe7c292714b606527424e1111736d2471545ff87\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/issue-credentials/records/{{recordAccept}}/accept-offer",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"issue-credentials",
+								"records",
+								"{{recordAccept}}",
+								"accept-offer"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "issue-credentials/records/<id>/issue-credential",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"//pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/issue-credentials/records/{{recordOffer}}/issue-credential",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"issue-credentials",
+								"records",
+								"{{recordOffer}}",
+								"issue-credential"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Communication",
+			"item": [
+				{
+					"name": "connections  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Removed redundant declaration of helpers\r",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {\r",
+									"    let helpers = {};\r",
+									"\r",
+									"    helpers.checkJSON = function checkJSON() {\r",
+									"        pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.checkStatus = function checkStatus(status) {\r",
+									"        pm.test(\"response is ok (\"+status+\")\", function () {\r",
+									"            pm.response.to.have.status(status);\r",
+									"        });\r",
+									"    }\r",
+									"\r",
+									"    helpers.checkDelay = function checkDelay(ms) {\r",
+									"        // The response time must be less than ms milliseconds\r",
+									"        pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+ms+\"ms)\", function () {pm.expect(responseTime).to.be.below(ms);\r",
+									"        });\r",
+									"    }\r",
+									"        \r",
+									"    helpers.hasData = function hasData() {\r",
+									"        pm.test(\"Content has data\", function () { \r",
+									"          var jsonData = pm.response.json();\r",
+									"          pm.expect(jsonData).to.have.property('data');\r",
+									"          pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.mustContain = function mustContain(text) {\r",
+									"        pm.test(\"Content contains expected text (\"+text+\")\", function () { \r",
+									"          pm.expect(pm.response.text()).to.include(text); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.minArraySize = function minArraySize(a, minSize) {\r",
+									"        pm.test(\"Array contains enough items (\"+minSize+\")\", function () { \r",
+									"          pm.expect(a.length).to.be.at.least(minSize); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.testSchema = function testSchema(_schema, obj, strSchema) {\r",
+									"      pm.test(\"Schema \"+strSchema+\" is OK\", function () { \r",
+									"          pm.expect(tv4.validate(obj, _schema)).to.be.true;\r",
+									"      })\r",
+									"    }\r",
+									"\r",
+									"    return helpers;\r",
+									"} + '; loadHelpers();');\r",
+									"\r",
+									"    // ------------------------\r",
+									"    //   TESTS FOR THIS CALL\r",
+									"    // ------------------------\r",
+									"\r",
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(500);\r",
+									"\r",
+									"pm.test(\"APIs are running\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.kind).to.eql('ConnectionsPage'); \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/connections",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"connections"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "connections [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Removed redundant declaration of helpers\r",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {\r",
+									"    let helpers = {};\r",
+									"\r",
+									"    helpers.checkJSON = function checkJSON() {\r",
+									"        pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.checkStatus = function checkStatus(status) {\r",
+									"        pm.test(\"response is ok (\"+status+\")\", function () {\r",
+									"            pm.response.to.have.status(status);\r",
+									"        });\r",
+									"    }\r",
+									"\r",
+									"    helpers.checkDelay = function checkDelay(ms) {\r",
+									"        // The response time must be less than ms milliseconds\r",
+									"        pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+ms+\"ms)\", function () {pm.expect(responseTime).to.be.below(ms);\r",
+									"        });\r",
+									"    }\r",
+									"        \r",
+									"    helpers.hasData = function hasData() {\r",
+									"        pm.test(\"Content has data\", function () { \r",
+									"          var jsonData = pm.response.json();\r",
+									"          pm.expect(jsonData).to.have.property('data');\r",
+									"          pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.mustContain = function mustContain(text) {\r",
+									"        pm.test(\"Content contains expected text (\"+text+\")\", function () { \r",
+									"          pm.expect(pm.response.text()).to.include(text); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.minArraySize = function minArraySize(a, minSize) {\r",
+									"        pm.test(\"Array contains enough items (\"+minSize+\")\", function () { \r",
+									"          pm.expect(a.length).to.be.at.least(minSize); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.testSchema = function testSchema(_schema, obj, strSchema) {\r",
+									"      pm.test(\"Schema \"+strSchema+\" is OK\", function () { \r",
+									"          pm.expect(tv4.validate(obj, _schema)).to.be.true;\r",
+									"      })\r",
+									"    }\r",
+									"\r",
+									"    return helpers;\r",
+									"} + '; loadHelpers();');\r",
+									"\r",
+									"    // ------------------------\r",
+									"    //   TESTS FOR THIS CALL\r",
+									"    // ------------------------\r",
+									"\r",
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(500);\r",
+									"\r",
+									"pm.test(\"APIs are running\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.kind).to.eql('ConnectionsPage'); \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/connections",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"connections"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "connections",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Removed redundant declaration of helpers\r",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {\r",
+									"    let helpers = {};\r",
+									"\r",
+									"    helpers.checkJSON = function checkJSON() {\r",
+									"        pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.checkStatus = function checkStatus(status) {\r",
+									"        pm.test(\"response is ok (\"+status+\")\", function () {\r",
+									"            pm.response.to.have.status(status);\r",
+									"        });\r",
+									"    }\r",
+									"\r",
+									"    helpers.checkDelay = function checkDelay(ms) {\r",
+									"        // The response time must be less than ms milliseconds\r",
+									"        pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+ms+\"ms)\", function () {pm.expect(responseTime).to.be.below(ms);\r",
+									"        });\r",
+									"    }\r",
+									"        \r",
+									"    helpers.hasData = function hasData() {\r",
+									"        pm.test(\"Content has data\", function () { \r",
+									"          var jsonData = pm.response.json();\r",
+									"          pm.expect(jsonData).to.have.property('data');\r",
+									"          pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.mustContain = function mustContain(text) {\r",
+									"        pm.test(\"Content contains expected text (\"+text+\")\", function () { \r",
+									"          pm.expect(pm.response.text()).to.include(text); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.minArraySize = function minArraySize(a, minSize) {\r",
+									"        pm.test(\"Array contains enough items (\"+minSize+\")\", function () { \r",
+									"          pm.expect(a.length).to.be.at.least(minSize); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.testSchema = function testSchema(_schema, obj, strSchema) {\r",
+									"      pm.test(\"Schema \"+strSchema+\" is OK\", function () { \r",
+									"          pm.expect(tv4.validate(obj, _schema)).to.be.true;\r",
+									"      })\r",
+									"    }\r",
+									"\r",
+									"    return helpers;\r",
+									"} + '; loadHelpers();');\r",
+									"\r",
+									"    // ------------------------\r",
+									"    //   TESTS FOR THIS CALL\r",
+									"    // ------------------------\r",
+									"\r",
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(500);\r",
+									"\r",
+									"pm.test(\"APIs are running\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.kind).to.eql('ConnectionsPage'); \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"label\": \"Connect OSAIS with AI 12345\",\r\n\"goalCode\": \"issue-vc to AI 12345\",\r\n\"goal\": \"To issue a VC to AI 12345\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/connections",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"connections"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "connection-invitations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Removed redundant declaration of helpers\r",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {\r",
+									"    let helpers = {};\r",
+									"\r",
+									"    helpers.checkJSON = function checkJSON() {\r",
+									"        pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.checkStatus = function checkStatus(status) {\r",
+									"        pm.test(\"response is ok (\"+status+\")\", function () {\r",
+									"            pm.response.to.have.status(status);\r",
+									"        });\r",
+									"    }\r",
+									"\r",
+									"    helpers.checkDelay = function checkDelay(ms) {\r",
+									"        // The response time must be less than ms milliseconds\r",
+									"        pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+ms+\"ms)\", function () {pm.expect(responseTime).to.be.below(ms);\r",
+									"        });\r",
+									"    }\r",
+									"        \r",
+									"    helpers.hasData = function hasData() {\r",
+									"        pm.test(\"Content has data\", function () { \r",
+									"          var jsonData = pm.response.json();\r",
+									"          pm.expect(jsonData).to.have.property('data');\r",
+									"          pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.mustContain = function mustContain(text) {\r",
+									"        pm.test(\"Content contains expected text (\"+text+\")\", function () { \r",
+									"          pm.expect(pm.response.text()).to.include(text); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.minArraySize = function minArraySize(a, minSize) {\r",
+									"        pm.test(\"Array contains enough items (\"+minSize+\")\", function () { \r",
+									"          pm.expect(a.length).to.be.at.least(minSize); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.testSchema = function testSchema(_schema, obj, strSchema) {\r",
+									"      pm.test(\"Schema \"+strSchema+\" is OK\", function () { \r",
+									"          pm.expect(tv4.validate(obj, _schema)).to.be.true;\r",
+									"      })\r",
+									"    }\r",
+									"\r",
+									"    return helpers;\r",
+									"} + '; loadHelpers();');\r",
+									"\r",
+									"    // ------------------------\r",
+									"    //   TESTS FOR THIS CALL\r",
+									"    // ------------------------\r",
+									"\r",
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(500);\r",
+									"\r",
+									"pm.test(\"APIs are running\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.kind).to.eql('ConnectionsPage'); \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"invitation\":\"eyJpZCI6IjA4NjJjZTJhLWZkMTEtNGFhMS1iZTZhLTUxZDNhYjU5NWU3NiIsInR5cGUiOiJodHRwczovL2RpZGNvbW0ub3JnL291dC1vZi1iYW5kLzIuMC9pbnZpdGF0aW9uIiwiZnJvbSI6ImRpZDpwZWVyOjIuRXo2TFNuVUdlVE52SkJtU1BuTndIR1pBSkt2a0RIOXJBb2tLSm9BSGhlZEp3OXB1bS5WejZNa2lQUnZpNFdwQmZmWmF2U3NmMWlWRXZpeXZNVUVYRkFHbXhlRUVrWjlwNGVvLlNleUowSWpvaVpHMGlMQ0p6SWpwN0luVnlhU0k2SW1oMGRIQTZMeTh4T1RJdU1UWTRMakV1T0RNNk9ERXdNQzlrYVdSamIyMXRJaXdpY2lJNlcxMHNJbUVpT2xzaVpHbGtZMjl0YlM5Mk1pSmRmWDAiLCJib2R5Ijp7ImdvYWxfY29kZSI6Imlzc3VlLXZjIHRvIEFJIDEyMzQ1IiwiZ29hbCI6IlRvIGlzc3VlIGEgVkMgdG8gQUkgMTIzNDUiLCJhY2NlcHQiOltdfX0=\"\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/connection-invitations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"connection-invitations"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "connections/{id}  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Removed redundant declaration of helpers\r",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {\r",
+									"    let helpers = {};\r",
+									"\r",
+									"    helpers.checkJSON = function checkJSON() {\r",
+									"        pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.checkStatus = function checkStatus(status) {\r",
+									"        pm.test(\"response is ok (\"+status+\")\", function () {\r",
+									"            pm.response.to.have.status(status);\r",
+									"        });\r",
+									"    }\r",
+									"\r",
+									"    helpers.checkDelay = function checkDelay(ms) {\r",
+									"        // The response time must be less than ms milliseconds\r",
+									"        pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+ms+\"ms)\", function () {pm.expect(responseTime).to.be.below(ms);\r",
+									"        });\r",
+									"    }\r",
+									"        \r",
+									"    helpers.hasData = function hasData() {\r",
+									"        pm.test(\"Content has data\", function () { \r",
+									"          var jsonData = pm.response.json();\r",
+									"          pm.expect(jsonData).to.have.property('data');\r",
+									"          pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.mustContain = function mustContain(text) {\r",
+									"        pm.test(\"Content contains expected text (\"+text+\")\", function () { \r",
+									"          pm.expect(pm.response.text()).to.include(text); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.minArraySize = function minArraySize(a, minSize) {\r",
+									"        pm.test(\"Array contains enough items (\"+minSize+\")\", function () { \r",
+									"          pm.expect(a.length).to.be.at.least(minSize); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.testSchema = function testSchema(_schema, obj, strSchema) {\r",
+									"      pm.test(\"Schema \"+strSchema+\" is OK\", function () { \r",
+									"          pm.expect(tv4.validate(obj, _schema)).to.be.true;\r",
+									"      })\r",
+									"    }\r",
+									"\r",
+									"    return helpers;\r",
+									"} + '; loadHelpers();');\r",
+									"\r",
+									"    // ------------------------\r",
+									"    //   TESTS FOR THIS CALL\r",
+									"    // ------------------------\r",
+									"\r",
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(500);\r",
+									"\r",
+									"pm.test(\"APIs are running\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.kind).to.eql('ConnectionsPage'); \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/connections/0862ce2a-fd11-4aa1-be6a-51d3ab595e76",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"connections",
+								"0862ce2a-fd11-4aa1-be6a-51d3ab595e76"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "connections/{id} [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Removed redundant declaration of helpers\r",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {\r",
+									"    let helpers = {};\r",
+									"\r",
+									"    helpers.checkJSON = function checkJSON() {\r",
+									"        pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.checkStatus = function checkStatus(status) {\r",
+									"        pm.test(\"response is ok (\"+status+\")\", function () {\r",
+									"            pm.response.to.have.status(status);\r",
+									"        });\r",
+									"    }\r",
+									"\r",
+									"    helpers.checkDelay = function checkDelay(ms) {\r",
+									"        // The response time must be less than ms milliseconds\r",
+									"        pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+ms+\"ms)\", function () {pm.expect(responseTime).to.be.below(ms);\r",
+									"        });\r",
+									"    }\r",
+									"        \r",
+									"    helpers.hasData = function hasData() {\r",
+									"        pm.test(\"Content has data\", function () { \r",
+									"          var jsonData = pm.response.json();\r",
+									"          pm.expect(jsonData).to.have.property('data');\r",
+									"          pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.mustContain = function mustContain(text) {\r",
+									"        pm.test(\"Content contains expected text (\"+text+\")\", function () { \r",
+									"          pm.expect(pm.response.text()).to.include(text); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.minArraySize = function minArraySize(a, minSize) {\r",
+									"        pm.test(\"Array contains enough items (\"+minSize+\")\", function () { \r",
+									"          pm.expect(a.length).to.be.at.least(minSize); \r",
+									"        });\r",
+									"    }\r",
+									"    \r",
+									"    helpers.testSchema = function testSchema(_schema, obj, strSchema) {\r",
+									"      pm.test(\"Schema \"+strSchema+\" is OK\", function () { \r",
+									"          pm.expect(tv4.validate(obj, _schema)).to.be.true;\r",
+									"      })\r",
+									"    }\r",
+									"\r",
+									"    return helpers;\r",
+									"} + '; loadHelpers();');\r",
+									"\r",
+									"    // ------------------------\r",
+									"    //   TESTS FOR THIS CALL\r",
+									"    // ------------------------\r",
+									"\r",
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(500);\r",
+									"\r",
+									"pm.test(\"APIs are running\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.kind).to.eql('ConnectionsPage'); \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null",
+								"equals": true
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8",
+								"equals": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/connections/d0100f87-56cd-42af-82d1-b0a4650b3717",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"connections",
+								"d0100f87-56cd-42af-82d1-b0a4650b3717"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "verification/policies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"followOriginalHttpMethod": false
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{APIKEY}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apikey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "null",
+						"equals": true
+					},
+					{
+						"key": "charset",
+						"value": "UTF-8",
+						"equals": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{host}}/prism-agent/verification/policies",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"prism-agent",
+						"verification",
+						"policies"
+					]
+				},
+				"description": "testing minimum response time as well as basic call"
+			},
+			"response": []
+		},
+		{
+			"name": "schema-registry/schemas Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"followOriginalHttpMethod": false
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{APIKEY}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apikey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "null",
+						"equals": true
+					},
+					{
+						"key": "charset",
+						"value": "UTF-8",
+						"equals": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{host}}/prism-agent/schema-registry/schemas/0edc8ab5-70b8-321e-a740-a44efa9edffc",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"prism-agent",
+						"schema-registry",
+						"schemas",
+						"0edc8ab5-70b8-321e-a740-a44efa9edffc"
+					]
+				},
+				"description": "testing minimum response time as well as basic call"
+			},
+			"response": []
+		},
+		{
+			"name": "events/webhooks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"followOriginalHttpMethod": false
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{APIKEY}}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "null",
+						"equals": true
+					},
+					{
+						"key": "charset",
+						"value": "UTF-8",
+						"equals": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{host}}/prism-agent/events/webhooks",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"prism-agent",
+						"events",
+						"webhooks"
+					]
+				},
+				"description": "testing minimum response time as well as basic call"
+			},
+			"response": []
+		}
+	]
+}
