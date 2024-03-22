@@ -1,0 +1,207 @@
+
+============================================
+ 1/ Assigning a DID to an AI
+============================================
+
+ - context :
+    * a Prism AGENT running in Multi-Tenant mode
+
+ - specs
+
+   * OSAIS is an Admin of a PRISM Agent running permanently in ISSUER mode
+
+   => Init phase
+        1/ as ADMIN of the Agent, OSAIS creates a wallet and an entity for itself
+        2/ OSAIS registers an API_KEY for itself to act as ISSUER
+        3/ as ISSUER, OSAIS creates a DID for itself  [POST  / did-registrart/dids]
+        4/ as ISSUER, OSAIS publishes its DID         [POST  / did-registrart/dids/{didRef}/publications]
+        5/ as ISSUER, OSAIS creates the credentials schemas (associated with its DID)  [POST  /schema-registry/schemas]
+        6/ as ISSUER, OSAIS creates one Credentials definition per Credentials Schema, so that it can later issue VCs [POST  /credential-definition-registry/definitions]
+         (*6) schemas need to be uploaded on the target app (eg: OpenSourceAIs.comn/assets/credentials/ai_identity.json)
+
+   => AI registration
+        1/ AI gets created within OSAIS
+        2/ as Admin of the Agent, OSAIS creates a wallet for the AI (this wallet will receive income from owner / lender and will be used to pay fees for any onchain transactions)   [POST /wallets]
+        3/ as Admin, OSAIS creates an entity representing the AI        [POST /iam/entities]
+        4/ as Admin, OSAIS registers an API_KEY with this AI entity     [POST /iam/apikey-authentication]
+        5/ as HOLDER, AI authenticates in the PRISM Agent and issues its OWN DID   [POST  / did-registrart/dids] 
+        6/ as HOLDER, AI publishes its DID         [POST  / did-registrart/dids/{didRef}/publications]        
+
+   => No mediator
+        As OSAIS and its AIs are already communicating between themselves with an internal protocol, we will simplify this first PoC implementation by not making use yet of a Mediator. 
+        The notifications of events between OSAIS and its AIs will be managed directly within OSAIS. 
+        All other interactions beyond simple notifications will still happen in the PRISM architecture, as per a proper DID/VC implementation
+        Later, a Mediator could be added into the infra to make the inter-communication totally independent from OSAIS
+
+   => Establishing a DID comm channel between OSAIS and an AI
+        1/ as ISSUER, OSAIS lists the available connections with all AIs    [GET /connections]
+        2/ if no connection for selected AI
+          2a/ as ISSUER, OSAIS creates a private communication channel intended to be with the AI    [POST  /connections]
+          2b/ within OSAIS, the AI gets notified of a new DID comm channel  [note: we are not making use of DIDCOMM Webhooks / Mediators at this stage, as we can use internal OSAIS comms]
+          2c/ as HOLDER, the AI accepts the OOB invitation from OSAIS    [POST  /connection-invitations]
+        3/ there is a private DID connection between OSAIS and AI, for OSAIS to emit VCs to AI
+
+   => Issuing a VC to an AI
+        1/ as ISSUER, OSAIS ensures that a DID Comm channel exists for the AI (if not, go to establish it)
+        2/ as ISSUER, OSAIS issues a VC offer to an AI    [POST /issue-credentials/credential-offers]
+        3/ within OSAIS, the AI receives notification of an incoming VC [note: we are not making use of DIDCOMM Webhooks / Mediators at this stage, as we can use internal OSAIS comms]
+        4/ as a HOLDER, the AI accepts the VC     [POST /issue-credentials/records/{recordId}/accept-offer]
+        5/ as ISSUER, OSAIS issues the final VC to the AI     [POST /issue-credentials/records/{recordId}/issue-credential]
+
+   => Verify AI creds
+        1/ as Admin of the VERIFIER Agent, OSAIS requests Proof of Identity to AI (VC schema Proof of ID)   [POST /present-proof/presentations]
+        2/ within OSAIS, the AI receives notification of an incoming proof of presentation of a VC
+        3/ as HOLDER, the AI gets the proof presentation record     [GET /present-proof/presentations/{presentationId}]
+        4/ as HOLDER, the AI accepts to present its VC as proof     [PATCH /present-proof/presentations/{presentationId}]
+
+
+
+============================================
+ 2/ Possible update of specs
+============================================
+
+ - We know we have a way to give an identity to an AI, and set a wallet for this AI. So the AI could later pay for its own infra/GPU needs
+ - The owner of the AI infra (GPU) or model (IP) could also get his own DID, and receive a VC to prove ownership of the AI infra, or AI model...
+ - The owner of the AI infra can set a payment per call to his infra for a specific AI (for example, such AI can use infra for 1 ADA per call)  
+ - The owner of the AI model can set a payment per call using his model for a specific AI (for example, such AI can use model for 0.01 ADA per call)  
+ - OSAIS will establish VCs for the AI 
+    * Identity VC (who is this AI) :
+        osais_uid_of_ai (12314), 
+        provider (Stable Diffusion), 
+        name (sdxl), 
+        model (sd_xl_refiner_1.0.safetensors), 
+        repo (https://github.com/Stability-AI/generative-models), 
+        location (https://yahoo-pensions-concerns-quantum.trycloudflare.com/)
+        issued_at (date)
+
+    * Infra ownership VC (who this AI infra belongs to, and royalties settings) : 
+        osais_uid_of_ai (12314),
+        location (https://yahoo-pensions-concerns-quantum.trycloudflare.com/)
+        did of infra owner (did:prism:...)
+        infra cost per run (0.54 ADA / $0.2)
+        issued_at (date)
+
+    * Model ownership VC (who this AI Model belongs to, and royalties settings) : 
+        osais_uid_of_ai (12314),
+        model (sd_xl_refiner_1.0.safetensors), 
+        did of user owning this model (did:prism:...)
+        IP cost per use of model (0.154 ADA / $0.0062)
+        issued_at (date)
+
+    * beneficiary VC (one per person the AI can run for, and balance of runs left): 
+        did of beneficiary (did:prism:...)
+        total paid in since start ($100)
+        Balance as of now ($46.5652)
+        Amount last paid in ($50)
+        Date last paid amount (date)
+        Number of use paid (32)
+        Date last used (date)
+        Number of use left (324)
+        issued_at (date)
+
+ => There is no immediate need for Marlowe smart contract to rent an AI
+ => This solution with VCs allows for multiple users of an AI (all renting services at same time, and all paying fees/royalties to owners of infra/models)
+ => It does not need smart contract, just topping up an AI wallet to use it
+
+ 
+============================================
+ 3/ Other considerations
+============================================
+==================================
+
+
+   => AI needs to have a wallet (priv key yo wallet)
+
+   => Define the Credential's Schemas 
+        * AI origin (uid, name, repo, model, location, gpu...)
+        * transaction (id, when, cost (ms), cost (usd), ...)
+
+  {
+  "name": "transaction",
+  "version": "1.0.0",
+  "description": "An AI's transaction's KPIs",
+  "type": "https://w3c-ccg.github.io/vc-json-schemas/schema/2.0/schema.json",
+  "author": "did:prism:TODO",
+  "tags": [
+    "AI",
+    "KPI",
+    "transaction"
+  ],
+  "schema": {
+    "$id": "https://opensourceAIs.com/schemas/transation",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "description": "An AI's transaction's KPIs",
+    "type": "object",
+    "properties": {
+      "transaction_id": {
+        "type": "integer"
+      },
+      "cost_in_ms": {
+        "type": "integer"
+      },
+      "cost_in_usd": {
+        "type": "float"
+      },
+      "created_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+    },
+    "required": [
+      "transaction_id",
+      "cost_in_ms",
+      "cost_in_usd",
+      "created_at"
+    ],
+    "additionalProperties": true
+  }
+}
+
+
+  {
+  "name": "origin",
+  "version": "1.0.0",
+  "description": "An AI's attributes",
+  "type": "https://w3c-ccg.github.io/vc-json-schemas/schema/2.0/schema.json",
+  "author": "did:prism:TODO",
+  "tags": [
+    "AI",
+    "location",
+    "gpu"
+  ],
+  "schema": {
+    "$id": "https://opensourceAIs.com/schemas/origin",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "description": "Identity of an AI",
+    "type": "object",
+    "properties": {
+      "uid": {
+        "type": "string",
+      },
+      "name": {
+        "type": "string",
+      },
+      "model": {
+        "type": "string",
+      },
+      "repo": {
+        "type": "string",
+      },
+      "location": {
+        "type": "string"
+      },
+      "gpu": {
+        "type": "string"
+      },
+    },
+    "required": [
+      "uid",
+      "name",
+      "model",
+      "repo",
+      "location",
+      "gpu"
+    ],
+    "additionalProperties": true
+  }
+}

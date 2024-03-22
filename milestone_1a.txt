@@ -1,0 +1,47 @@
+
+========================================================================================
+  M1 - Finalise the specifications and choice of Tech Stacks
+========================================================================================
+
+OUTPUTS
+ - This is a Concept proposal, with many risks of implementation. At this early stage, we feel the need for a small initial milestone to establish clearly all the specifications and tech stacks.
+ - The output produced at this milestone: 
+        * A public GitHub repo
+        * A few video proof of some tech validation / Proof of concepts supporting the choice of the future tech stack
+        * Documented choice of tech stacks for the upcoming milestones
+        * Defined specifications for each component (NFT metadata, DID, VC content, etc…)
+
+ACCEPTANCE CRITERIA
+        * we have a workable design and choice of tech to deliver this PoC
+        * we have identified risks, limitations, challenges…
+        * we are in a position to implement the next phases
+
+
+
+
+
+========================================================================================
+  Tasks done during this milestone [March 2024]
+========================================================================================
+
+ - installed "Open Enterprise Agent" (Docker version) to test if it can work as a base solution 
+ - could not make it work with Ubuntu 20.04 , but managed to run it with Ubuntu 22.04
+ - managed to run an agent
+ - created POSTMAN scripts for testing PRISM Agent
+ - managed to create a DID and publish the DID onchain
+ - managed to create a Credentials Schema
+ - face the problem of required architecture for multiple holders, have to make Agent multi-tenant...
+ - ran into several issues with config for multi-tenant, but managed to get it running
+ - Managed to run Agent as Admin, and create multiple tenants, each representing a separate entity with its own wallet address
+ - Each tenant can call the Agent to create its own DID, and publish it onchain
+ - Agent exposes APIs for either Issuers, Holders, or Verifiers
+ - Initally tried to use PRISM Agent without DIDCOMM connection, but this is NOT possible, by design
+ - ran into several problems to establish a connection between ISSUER and HOLDER on test env Windows WSL, but managed to have it in place via config update
+ - HOLDER and ISSUER can exchange secure private and anonymous messages with each of them being identified by their DIDs, and DIDs not shared between themselves
+ - ISSUER can issue a Credential offer
+ - HOLDER can accept the Credential offer
+ - ran into problems to automatically, or manually convert the offer into a VC, logged a bug with PRISM team, awaiting resolution (see https://youtu.be/Iq1tMPdLraU)
+   
+
+
+
