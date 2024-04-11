@@ -17,9 +17,6 @@ ACCEPTANCE CRITERIA
         * we are in a position to implement the next phases
 
 
-
-
-
 ========================================================================================
   Tasks done during this milestone [March 2024]
 ========================================================================================
