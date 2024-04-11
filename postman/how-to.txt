@@ -1,0 +1,56 @@
+# Context
+
+  - a Prism AGENT running in Multi-Tenant mode
+  - POSTMAN scripts
+  - [OSAIS] is an Admin of a PRISM Agent node
+
+# End to end calls (from setup to VC verified) 
+
+   => Init phase
+        1a/ as ADMIN of the Agent, OSAIS creates a wallet for itself  [POST /wallet]
+        1b/ as ADMIN of the Agent, OSAIS creates an entity for itself  [POST /iam/entities]
+        2/ OSAIS registers an API_KEY for itself to act as ISSUER   [POST /aim/apikey-authentication]
+        3/ as ISSUER, OSAIS creates a DID for itself  [POST  / did-registrart/dids]
+        4/ as ISSUER, OSAIS publishes its DID         [POST  / did-registrart/dids/{didRef}/publications]
+        5/ as ISSUER, OSAIS creates the credentials schemas (associated with its DID)  [POST  /schema-registry/schemas]
+        6/ as ISSUER, OSAIS creates one Credentials definition per Credentials Schema, so that it can later issue VCs [POST  /credential-definition-registry/definitions]
+         (*6) schemas need to be uploaded on the target app (eg: OpenSourceAIs.comn/assets/credentials/ai_identity.json)
+
+   => AI registration
+        1/ AI gets created within OSAIS
+        2/ as Admin of the Agent, OSAIS creates a wallet for the AI (this wallet will receive income from owner / lender and will be used to pay fees for any onchain transactions)   [POST /wallets]
+        3/ as Admin, OSAIS creates an entity representing the AI        [POST /iam/entities]
+        4/ as Admin, OSAIS registers an API_KEY with this AI entity     [POST /iam/apikey-authentication]
+        5/ as HOLDER, AI authenticates in the PRISM Agent and issues its OWN DID   [POST  / did-registrart/dids] 
+        6/ as HOLDER, AI publishes its DID         [POST  / did-registrart/dids/{didRef}/publications]        
+
+   => No mediator
+        As OSAIS and its AIs are already communicating between themselves with an internal protocol, we will simplify this first PoC implementation by not making use yet of a Mediator. 
+        The notifications of events between OSAIS and its AIs will be managed directly within OSAIS. 
+        All other interactions beyond simple notifications will still happen in the PRISM architecture, as per a proper DID/VC implementation
+        Later, a Mediator could be added into the infra to make the inter-communication totally independent from OSAIS
+
+   => Establishing a DID comm channel between OSAIS and an AI
+        1/ as ISSUER, OSAIS lists the available connections with all AIs    [GET /connections]
+        2/ if no connection for selected AI
+          2a/ as ISSUER, OSAIS creates a private communication channel intended to be with the AI    [POST  /connections]
+          2b/ within OSAIS, the AI gets notified of a new DID comm channel  [note: we are not making use of DIDCOMM Webhooks / Mediators at this stage, as we can use internal OSAIS comms]
+          2c/ as HOLDER, the AI accepts the OOB invitation from OSAIS    [POST  /connection-invitations]
+        3/ there is a private DID connection between OSAIS and AI, for OSAIS to emit VCs to AI
+
+   => Issuing a VC to an AI
+        1/ as ISSUER, OSAIS ensures that a DID Comm channel exists for the AI (if not, go to establish it)
+        2/ as ISSUER, OSAIS issues a VC offer to an AI    [POST /issue-credentials/credential-offers]
+        3/ within OSAIS, the AI receives notification of an incoming VC [note: we are not making use of DIDCOMM Webhooks / Mediators at this stage, as we can use internal OSAIS comms]
+        3b/ the HOLDER gets the credential offer [GET /issue-credential/records]
+        4/ as a HOLDER, the AI accepts the VC     [POST /issue-credentials/records/{recordId}/accept-offer]  (puts it own did-prism in SubjectId)
+        5/ as ISSUER, OSAIS gets the offers   [GET /issue-credentials/records/{recordId}]  and checks that its status is now "RequestReceived"
+        5/ as ISSUER, OSAIS issues the final VC to the AI     [POST /issue-credentials/records/{recordId}/issue-credential]
+
+   => Verify AI creds
+        1/ as VERIFIER, OSAIS requests Proof of Identity to AI via the private connection  [POST /present-proof/presentations]  (with a challege and domain -  "options": {"challenge": "11c91493-01b3-4c4d-ac36-b336bab5bddf", "domain": "https://opensourceais.com"} )
+        2/ OSAIS can also get the list of proofs already sent    [GET /present-proof/presentations] or the one just sent [GET /present-proof/presentation?thid=<thid issued by verifier>]
+        3a/ the AI HOLDER receives notification via DIDCOMM and OSAIS, of an incoming proof of presentation of a VC
+        3b/ as HOLDER, the AI can get the proof presentation record   [GET /present-proof/presentation?thid=<thid issued by verifier>]  (note: the presentation_id of the verifier is different from the presentation_id of the holder, but the thid is a unique value known by both verifier and holder)
+        3c/ as HOLDER, the AI accepts to present its VC as proof     [PATCH /present-proof/presentations/{presentationId}]  with payload {"action": "request-accept", "proofId": [<holder_vc_id>]} where proofId= The unique identifier of the verifiable credential record to use as proof.
+        4/ as Verifier, OSAIS can read the VC  [GET /present-proof/presentation?thid=<thid issued by verifier>]  
