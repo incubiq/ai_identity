@@ -8,12 +8,11 @@
 
  - specs
 
-   * OSAIS is an Admin of a PRISM Agent node
+   * OSAIS is an Admin of a PRISM Agent running permanently in ISSUER mode
 
    => Init phase
-        1a/ as ADMIN of the Agent, OSAIS creates a wallet for itself  [POST /wallet]
-        1b/ as ADMIN of the Agent, OSAIS creates an entity for itself  [POST /iam/entities]
-        2/ OSAIS registers an API_KEY for itself to act as ISSUER   [POST /aim/apikey-authentication]
+        1/ as ADMIN of the Agent, OSAIS creates a wallet and an entity for itself
+        2/ OSAIS registers an API_KEY for itself to act as ISSUER
         3/ as ISSUER, OSAIS creates a DID for itself  [POST  / did-registrart/dids]
         4/ as ISSUER, OSAIS publishes its DID         [POST  / did-registrart/dids/{didRef}/publications]
         5/ as ISSUER, OSAIS creates the credentials schemas (associated with its DID)  [POST  /schema-registry/schemas]
@@ -46,175 +45,16 @@
         1/ as ISSUER, OSAIS ensures that a DID Comm channel exists for the AI (if not, go to establish it)
         2/ as ISSUER, OSAIS issues a VC offer to an AI    [POST /issue-credentials/credential-offers]
         3/ within OSAIS, the AI receives notification of an incoming VC [note: we are not making use of DIDCOMM Webhooks / Mediators at this stage, as we can use internal OSAIS comms]
-        3b/ the HOLDER gets the credential offer [GET /issue-credential/records]
-        4/ as a HOLDER, the AI accepts the VC     [POST /issue-credentials/records/{recordId}/accept-offer]  (puts it own did-prism in SubjectId)
-        5/ as ISSUER, OSAIS gets the offers   [GET /issue-credentials/records/{recordId}]  and checks that its status is now "RequestReceived"
+        4/ as a HOLDER, the AI accepts the VC     [POST /issue-credentials/records/{recordId}/accept-offer]
         5/ as ISSUER, OSAIS issues the final VC to the AI     [POST /issue-credentials/records/{recordId}/issue-credential]
 
    => Verify AI creds
-        1/ as VERIFIER, OSAIS requests Proof of Identity to AI via the private connection  [POST /present-proof/presentations]  (with a challege and domain -  "options": {"challenge": "11c91493-01b3-4c4d-ac36-b336bab5bddf", "domain": "https://opensourceais.com"} )
-        2/ OSAIS can also get the list of proofs already sent    [GET /present-proof/presentations] or the one just sent [GET /present-proof/presentation?thid=<thid issued by verifier>]
-        3a/ the AI HOLDER receives notification via DIDCOMM and OSAIS, of an incoming proof of presentation of a VC
-        3b/ as HOLDER, the AI can get the proof presentation record   [GET /present-proof/presentation?thid=<thid issued by verifier>]  (note: the presentation_id of the verifier is different from the presentation_id of the holder, but the thid is a unique value known by both verifier and holder)
-        3c/ as HOLDER, the AI accepts to present its VC as proof     [PATCH /present-proof/presentations/{presentationId}]  with payload {"action": "request-accept", "proofId": [<holder_vc_id>]} where proofId= The unique identifier of the verifiable credential record to use as proof.
-        4/ as Verifier, OSAIS can read the VC  [GET /present-proof/presentation?thid=<thid issued by verifier>]  
-
-============================================
- 2/ Decentralised workflow
-============================================
-
- - to operate in a decentralised and trusted way, this is what we want / need:
-   * We want to avoid forcing a payment for each AI call, as it could become burdensome and too costly in tx fees. For this reason, we will work with pre-payment only, and monthly settlements.
-   * Someone (Human or AI - the Caller) can pay for the services of a particular AI
-   * The AI which can perfom the service (the AI Worker) has a wallet which can be topped up for its work
-   * The worker needs the guarantee of being paid before executing a job, whereas the Caller needs a guarantee that against payment, the job will be executed
-   * To receive an AI output, the caller can use the Worker AI by calling its API, and the worker AI will have to deliver, so long as the caller still has enough credits for at least one predictable transaction
-   * we avoid using a smart contract to call a worker AI, mostly for cost / transaction fee reasons, and we prefer to call the AI directly on its API (or via OSAIS). 
-     => OSAIS will be in charge of issuing VCs and keeping track of the stages of execution of the requested transaction.
-     => in some ways, OSAIS acts as the guardian of truth and trust in the system
-     => in a later iteration of the project, the equivalent OSAIS management of worker AIs and callers could be encapsulated in a smart contract, but this will be out of scope for this PoC
-
- - suggested implementation
-   * there are 4 types of roles within the ecosystem: 
-      (i) admin: OSAIS is the admin ; 
-      (ii) caller: all registered users have a caller role ; 
-      (iii) worker: any AI registered within OSAIS will have a worker role ; 
-      (iv) service provider : any entity who has been assigned a DID within OSAIS can also act as service provider when properly registered for this. 
-   * All those interacting in the ecosystem (admin / caller / worker) must have a DID. This is how they are identified.
-   * Since maintaining DID private keys can be burdensome, in the first instance (this current project), OSAIS will keep those keys and issue the DIDs to all registered users, and all AIs.  
-   * Along with the DID, OSAIS maintains a custodial wallet for each caller / worker.
-   * A caller or a worker registering as a service provider will get access to another custodial wallet (the service provider wallet)
-   * A user/caller can top-up his OSAIS "caller" wallet account (the wallet linked with the user's DID) with ADA (pay to the public address)
-   * A user/caller can top-up his OSAIS "caller" wallet account with Fiat (USD/EUR/GBP) by paying OSAIS (via Stripe) and OSAIS uses it own ADA balance to top-up the user's account by the same converted ADA amount as was paid in Fiat
-   * A user/caller cannot get money back from its caller account (it is not a savings account, it is a pre-paid account for calling AI services)
-   * A worker AI cannot get money back from its worker account, as the balance is mostly used for paying various fees
-   * service providers can extract money from their service provider account
-   * the tracking of AI service utilisation is made via Verifiable Credentials (VCs) proving who did what and who owes what to who. 
-   * we opt for an ecosystem of semi-autonomous AIs (as opposed to fully autonomous), where the execution of an AI service happens within the OSAIS ecosystem
-   * OSAIS acts as a Trust Framework which ensures that all actors in the system are legitimate 
-
-A/ caller tops-up worker AI wallet 
-  Caller tops-up his funds
-   case A-a: caller prepays in Fiat (USD, EUR, GBP) via stripe
-     - User pays via stripe
-     - OSAIS receives fiat money
-     - Since OSAIS will keep the fiat money, it will use its own funds (its own ADA funded wallet) to credit the caller's wallet with the prepaid amount converted into ADA
-   case A-b: user pays into his DID-wallet with ADA
-  => in both cases, the non-custodial wallet of the user is topped-up with ADA
-
-B/ Caller calls OSAIS for using a Worker AI
- - caller calls OSAIS API xyz-1 to signify its intention to use a particular AI (filter with some JSON spec, possibly including the full transaction to process). 
-   * OSAIS returns the list of all available AIs matching the caller's spec requirements. In this list, each AI must give their expected live availability and price for executing the requirement.
- 
- - within the list of AIs, the caller selects one by auto criteria selection (first in the list, most recently used, cheapest, running in a specific country, etc...), and calls again OSAIS on API xyz-2 to request execution of a transaction. 
-   * NOTE : this second call could be auto-prepared (choose first AI in list via criteria abc, after a successful return of first call), to avoid delay / asking caller-user too many questions
-   * OSAIS creates a uid for the future transaction to be executed by the AI worker
-   * OSAIS issues a "worker payment claim" VC to the worker AI, which the worker-AI auto-signs if it is available. VC contains the transaction uid, which the worker can use as a proof for claiming payment against OSAIS
-   * OSAIS issues a "caller payment claim" VC to the caller, which the caller auto-signs since he is the one requesting the transaction. VC contains the transaction uid, which OSAIS can use as a proof for claiming payment against the caller
-      
-C/ Worker processes the call
- - AI does its job and notifies each stage of its process execution (this is already in place within OSAIS) 
- - OSAIS marks the status of the transaction (executed or failed) : 
-   * When the worker AI executes successfully the transaction, it sends the result to OSAIS, which automatically sends it to the caller.
-   * OSAIS flags the transaction status as "correctly executed"
-   * The price of the transaction is set to the one pre-agreed one (by the worker-AI in the pre-call) ; OSAIS adds this cost to the transaction, but marks it "settled: false"
-   * If the worker-AI could not process correctly and ended up in error, OSAIS marks the transaction (with uid=...) status as "in error" ; no payment can be claimed against it
- - OSAIS issues a new "proof of activity" VC to the AI worker (it could be a executed or a failed status in the VC)
-
-D/ Service providers
- - A service provider is an entity that can proivide a service in exchange of a cost. 
- - list of possible services that can be provided:
-   * access to GPU power (cost per ms)
-   * access to a trained model for a specific type of AI (cost per use)
-   * access to a worker AI (full access, send input, receive output)
- - to be visible / accessible to others, a service provider must maintain a "service provider capability VC" which establishes its capability and cost ; this VC will have a 3 months duration to allow for update of cost / capabilities but at same time maintain a fixed knwn price for a long enough period
- - OSAIS can deliver this "service provider capability VC"
-
-E/ Worker AI setup, and autonomy of an AI
- - when a worker AI is created within OSAIS, it must define every single service providers that it may use. For example:
-   * define at least one infra owner (the one providing the GPU) ; The GPU owner will provide a cost (in USD) per second of execution (for example $0.00012 per sec), defined in its "capability VC"
-   * (optional) define its model owner (the one providing the trained model) ; the model owner will provide a royalty cost per transaction execution (also in USD, for example $0.000000001) ; if no model owner is provided, the royalty defaults to $0 
-   * (optional) define worker AIs that this AI can use for its needs  
-   * each service provider is identified by its DID, has a "capability VC", and has its own "service provider" wallet for payment of the service provided
-   * the settlement of payments is managed by OSAIS (see later)
-   * each service provider requested by the worker-AI must have a valid "capability VC" (issued by OSAIS) to guarantee to the AI the condition of service (expected delay, cost per sec, etc...) 
-   * if a capability VC is out of date, the worker-AI simply cannot use this provider, and if thye provider is a critical one, then the AI cannot work and provide its services
-   * those capability VCs will enable OSAIS to attribute cost between all parties, such as AI, owner of infra, owner of model...
-   * when an AI calculates a transaction cost estimate, it does so by adding the GPU cost, model cost, or any other claimed costs against it by any supplier of services to the AI. It is then allowed to add up to 1% of extra cost (its profit) for paying future tx fees if/when required.
-   * NOTE 1: The worker-AI does NOT belong any owner, but uses other people's services to "exist" ; no infra, or no model => no existence. 
-   * NOTE 2: for example, someone could lend their GPU and offer this service to ALL registered AIs     
- - we want the AI to be as autonomous as possible. 
-   * In the long run, we can imagine that an AI could subcontract to several infra GPU owners, and make use of several models, or use other services too (another AI worker as a slave AI, for example)
-   * the AI has its own wallet and reward its "suppliers" at each execution
-   * to incentivise "good worker-AIs", OSAIS will force an AI that returned a transaction in failure, to pay a fee (for example its expectd profit from the tx)
-
-F/ settlement (end of month)
-  At end of each month, OSAIS settles all accounts (callers, workers, service providers) with claims over (for example) 2 ADA.
-    * for each worker, OSAIS gets the list of valid claims, and checks if payment was made or not (uid of transaction knows), then
-     - for each successful transaction not yet settled:
-       * OSAIS debits the caller of the transaction amount
-       * OSAIS credits the AI worker of the transaction amount, less the claims of service providers
-       * OSAIS credits all service providers of their respective due amounts
-       * OSAIS marks the transaction as settled
-     - for each failed transaction not yet settled:
-       * OSAIS debits the AI worker of its pre-agreed profit
-       * OSAIS marks the transaction as settled
-
-============================================
- 3/ IMPACT ON OSAIS DESIGN
-============================================
-
- - at the moment, a user in OSAIS can "create an AI" (identified by a unique uid) and host it on a machine of his choice. This user is also free to shutdown this machine and upload the same AI on another infrastructure. And do this many times.
- - there is a strong coupling between the User, the AI, and the GPU infra. 
- - we would prefer a system where it is more decoupled, where the AI is "defined" by its general capabilities (eg: a TXT2IMG / IMG2IMG AI, based on Stable Diffusion 1.5.x), but where other "services" it may require are independant
- - this AI would have an API with input requirements. This API will reside at a specific location, initially whithin OSAIS, such as <osais>/ai/<uid> 
- - this AI would then be able to deploy is "engine" (a docker) into any "infra endpoint" which agreed to act as service provider for the AI (proof of it via a VC) 
- - this AI  would also be able to specify the trained model to use, but pointing at a specific location where it is uploaded (also provided by a service provider, with proof via VC)  
- => with this new design, a caller can request a service from an AI, and get offered several conditions of models, GPU (speed, cost), etc... 
+        1/ as Admin of the VERIFIER Agent, OSAIS requests Proof of Identity to AI (VC schema Proof of ID)   [POST /present-proof/presentations]
+        2/ within OSAIS, the AI receives notification of an incoming proof of presentation of a VC
+        3/ as HOLDER, the AI gets the proof presentation record     [GET /present-proof/presentations/{presentationId}]
+        4/ as HOLDER, the AI accepts to present its VC as proof     [PATCH /present-proof/presentations/{presentationId}]
 
 
-
-============================================
- VCs specs
-============================================
-
- - worker payment claim VC
- - caller payment claim VC
- - proof of activity VC
- - service provider capability VC (variable content depending on capability provided)
-  
-
-============================================
- Future evolution
-============================================
-
- - it could be that in the future OSAIS becomes a DAPP, and keeps the capability of issuing VCs to all entities in its eco-system
- - the verification of VCs currently within OSAIS could be pushed to a third party decentralised app whose only role is to verify proofs
- - the current design allows a transition to this fully decentralised system where AIs could become fully autonomous.
-
-
-   * OSAIS establishes a did pair connection between the caller and the AI worker 
-   * the AI worker offers to emit a VC which is a claim on a set amount of credits from the caller, which OSAIS will be able to force onto the caller when the transaction is executed
-   * the caller accepts the VC offer to allow the execution of the AI worker's processing for his request
-   * the AI processes the request, and notify the caller of the result (via OSAIS)
-   * OSAIS receives notification of request execution, and keeps an internal record of the caller's wallet balance (current balance less all VC claims by all workers)
-   * at end of each month, OSAIS settles all claims and pays all AIs workers, by moving funds from client's (non-custodial) wallets into AI's wallets, as per the VCs proof (note: maybe if the amount is tiny, like less than 2ADA, then OSAIS can pay AIs and keep new VC tracks of all tiny amounts)
-
- GET getCallerProofId (ai_worker_uid)  => OSAIS sends back a proof_id that corresponds to the Credit VC of the caller for the particular AI worker 
- POST StartAIWork (proof_id, params) => the caller sends the worker AI its proof of funds, and the params for AI processing 
-      - the AI searches for VC with the publicKey in param
-        * if none, it fails for no credit (caller never paid in)
-        * if at least one, it lists them all to get the most recent, then checks if at least enough credit for a normal call usage (which it can gather from its own AI VC)
-          ** if not enough credit, it fails for not enough credit left 
-          ** if enough credit, it processes the call
-
-  The caller can ask a proof of its credit balance for each AI he has VCs for, by querying OSAIS (this time as a verifier) and OSAIS will get proof that the caller has x credit for use
-  The model owner and the infra owner can at any time, query the amount of credits owed to them by a worker AI, and can request a payment from the AI, of the total amount of credit.
-
-D/ Model and Infra owner claim their credits
-  Owner calls the AI to claim funds
-  POST ClaimFunds() : 2 options: 1/ this is a call to OSAIS  ClaimFunds(ai_uid, owner_uid, ...) so that when OSAIS moves the ADA funds from AI wallet to owner wallet,  
-  Note: most of the time (no alternative to this right now), the owner of the AI is also the owner of the infra. 
 
 ============================================
  2/ Possible update of specs
@@ -258,13 +98,6 @@ D/ Model and Infra owner claim their credits
         Date last used (date)
         Number of use left (324)
         issued_at (date)
-
-    * AI caller credits
-        a public key given by the caller at first Credit top up emission, which allows the AI to get proof of identity of the caller
-        USD credit left ($50)
-        ADA credit left (A43) 
-        issued_at  (date)
-
 
  => There is no immediate need for Marlowe smart contract to rent an AI
  => This solution with VCs allows for multiple users of an AI (all renting services at same time, and all paying fees/royalties to owners of infra/models)
