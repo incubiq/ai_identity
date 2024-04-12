@@ -52,3 +52,11 @@ After this pre-install, it should work with those commands
 => wsl
 => curl http://localhost:8100/prism-agent/_system/health
 
+
+Misc helpers for wsl
+
+ - check ubuntu version : lsb_release -a
+ - upgrade ubuntu version : 1/ sudo do-release-upgrade   ; 2/ # restart Ubuntu  ;  3/ sudo do-release-upgrade
+ - which Ubuntu versions available on WSL ? : wsl --list --online
+ - which Ubuntu on my WSL ? : wsl --list --verbose
+ - set default Ubuntu on my WSL : wsl --set-default  Ubuntu-22.04

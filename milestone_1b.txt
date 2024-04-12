@@ -1,0 +1,34 @@
+
+========================================================================================
+  M1 - Finalise the specifications and choice of Tech Stacks
+========================================================================================
+
+OUTPUTS
+ - This is a Concept proposal, with many risks of implementation. At this early stage, we feel the need for a small initial milestone to establish clearly all the specifications and tech stacks.
+ - The output produced at this milestone: 
+        * A public GitHub repo
+        * A few video proof of some tech validation / Proof of concepts supporting the choice of the future tech stack
+        * Documented choice of tech stacks for the upcoming milestones
+        * Defined specifications for each component (NFT metadata, DID, VC content, etc…)
+
+ACCEPTANCE CRITERIA
+        * we have a workable design and choice of tech to deliver this PoC
+        * we have identified risks, limitations, challenges…
+        * we are in a position to implement the next phases
+
+========================================================================================
+  Tasks done during this milestone [April 2024]
+========================================================================================
+
+ - the work during March was mostly spent on DID/PRISM to validate how the Verified Credentials (VC) could be used
+ - it was demonstrated that we will be able to use DIDs and VCs, although we ran into a small bug for the final VC issuance
+ - worked through a solution to the "bug" of last month, and finally was able to get a working env
+ - HOLDER can now accept a Credential Offer
+ - ISSUER can now issue the final Verifiable Credential
+ - VERIFIER can verify a credential by establishing a one to one private conenction with a HOLDER
+ - Full end to end validation of PRISM / Identus done, from setup to VC verification
+ - Assessed additional capabilities / requirements (AnonCreds, Trust Registry) 
+ - Defined the architecture we will implement for this PoC (heavy use of DIDs/VC, no use of Smart contract, Prep OSAIS for future increased decentralisation and DAPP)
+ - Defined entities in the eco-system (AI workers, callers, and service providers)
+ - Defined the final specs of the VCs for all entities in the eco-system
+ - Produced video report covering all aspects (PRISM tests, Architecture review, New Design, Proposal for changes)
