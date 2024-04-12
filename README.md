@@ -9,7 +9,8 @@
  - additional video report for VC / PRISM issue: https://youtu.be/Iq1tMPdLraU
 
  1b/ (April):
- - video report: 
+ - video report: https://youtu.be/u_ufSn_7UR8 
+ - project specs: https://github.com/incubiq/ai_identity/blob/main/specs.txt
 
 
 # Identus test scripts

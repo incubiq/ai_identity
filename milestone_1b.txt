@@ -31,4 +31,4 @@ ACCEPTANCE CRITERIA
  - Defined the architecture we will implement for this PoC (heavy use of DIDs/VC, no use of Smart contract, Prep OSAIS for future increased decentralisation and DAPP)
  - Defined entities in the eco-system (AI workers, callers, and service providers)
  - Defined the final specs of the VCs for all entities in the eco-system
- - Produced video report covering all aspects (PRISM tests, Architecture review, New Design, Proposal for changes)
+ - Produced video report (https://youtu.be/u_ufSn_7UR8) covering all aspects (PRISM tests, Architecture review, New Design, Proposal for changes)
