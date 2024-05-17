@@ -38,7 +38,6 @@ After this pre-install, it should work with those commands
 => open a wsl terminal
 => cd open-enterprise-agent-main
 => then go to the latest version (ex:   cd v1.28.0 )
-=> cd infrastructure/local
 
 // to run it (on port 8100)
 => DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 PRISM_AGENT_VERSION=1.28.0 PRISM_NODE_VERSION=2.2.1 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
