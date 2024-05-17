@@ -50,3 +50,5 @@ Thumbs.db
 
 open-enterprise-agent-main/
 .vscode
+
+build*
