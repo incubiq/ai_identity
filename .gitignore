@@ -48,7 +48,6 @@ Thumbs.db
 *.mov
 *.wmv
 
-open-enterprise-agent-main/
 .vscode
 
 build*

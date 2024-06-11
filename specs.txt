@@ -132,6 +132,7 @@ F/ settlement (end of month)
     * assign DID to a virtualised AI (the AI is running in docker and accessible via openseourceais.com) 
     * create a Verified Credential for this AI
     * get general information and stats from this AI, in the form of a JSON format
+
  - M2 new plan:
     * wrap Identus APIs for our needs in a separate open source "identity" nodeJS app (will likely host it on identity.opensourceais.com)
     * make OSAIS as admin + issuer & verifier of VCs of this identity platform
@@ -146,6 +147,7 @@ F/ settlement (end of month)
     * Represent an AI on-chain (likely as a NFT, but could change based on Milestone 1 research)
     * Execute an AI's service (where the AI takes input, processes, and gives output)
     * Process the cost of the transaction and attributes earnings to the AI 
+    
  - M3 new plan:
     * the onchain representation of the AI is now its Identus identity wallet + VCs (not an NFT)
     * identity open source to verify VCs 

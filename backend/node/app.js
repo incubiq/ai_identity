@@ -143,6 +143,7 @@ const path = require('path');
         // Our routes 
         const routeWallet = require('./routes/route_wallet');
         const routeIdentity = require('./routes/route_identity');
+        const routeCredentials = require('./routes/route_credentials');
         const routePublicAPI = require('./routes/route_public');
         const routePrivateAdminAPI = require('./routes/route_private_admin');
 
@@ -157,6 +158,9 @@ const path = require('path');
 
         // identity route
         app.use('/api/v1/identity', routeIdentity);
+
+        // VC route
+        app.use('/api/v1/vc', routeCredentials);
 
         // public API route
         app.use('/api/v1/public', routePublicAPI);

@@ -7,7 +7,7 @@ const srvIdentus = require("../utils/util_identus");
 // all routes here start with               api/v1/identity/
 
 /*
- *      Identity routes
+ *      entity routes
  */
 
 // GET /entities
@@ -31,6 +31,10 @@ router.post("/entity", function(req, res, next) {
         mnemonic:  req.body.mnemonic? req.body.mnemonic : null,       // a seed phrase (optional ; if not provided, the API will generate a random one)
     });
   });
+
+/*
+ *      DID routes
+ */
 
 // GET /dids  (apikey of calling entity in the header {apikey: ...})
 router.get("/dids", function(req, res, next) {
