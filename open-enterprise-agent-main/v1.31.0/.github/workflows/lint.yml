@@ -1,0 +1,44 @@
+---
+name: Linter
+
+# Default shell is `sh`
+# which is old, use bourne-again version instead
+defaults:
+  run:
+    shell: bash
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint changes
+    runs-on: self-hosted
+    container:
+      image: ghcr.io/input-output-hk/atala-qa-automation
+      volumes:
+        - /nix:/nix
+      credentials:
+        username: ${{ secrets.ATALA_GITHUB_ACTOR }}
+        password: ${{ secrets.ATALA_GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.ATALA_GITHUB_TOKEN }}
+        APPLY_FIXES: none
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ATALA_GITHUB_TOKEN }}
+          fetch-depth: 0
+      - name: Mega-Linter
+        id: ml
+        uses: megalinter/megalinter@v7.1.0
+      - name: Archive production artifacts
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mega-Linter reports
+          path: |
+            megalinter-reports
+            mega-linter.log
+          overwrite: true

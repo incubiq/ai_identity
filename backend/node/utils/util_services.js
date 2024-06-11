@@ -42,5 +42,6 @@ module.exports = {
 
 // general utils
     consoleLog,
-    replyFast
+    replyFast,
+    async_uploadFile
 }

@@ -1,0 +1,40 @@
+
+========================================================================================
+  M2 - Assign DID and VCs to AI
+========================================================================================
+
+[ORIGINAL SPEC] OUTPUTS
+Open source GitHub repo containing all code and APIs to:
+ - assign DID to a virtualised AI (the AI is running in docker and accessible via openseourceais.com) 
+ - create a Verified Credential for this AI
+ - get general information and stats from this AI, in the form of a JSON format
+
+[ORIGINAL SPEC] ACCEPTANCE CRITERIA
+ - The AI is assigned a DID
+ - The AI has one or multiple Verified Credentials
+ - Additional milestone 1 outcomes are satisfied
+
+M2 - NEW PLAN AFTER M1 DESIGN review
+    * wrap Identus APIs for our needs in a separate open source "identity" nodeJS app (will likely host it on identity.opensourceais.com)
+    * make OSAIS as admin + issuer & verifier of VCs of this identity platform
+    * identity open source APIs to issue wallets (to AI, to Caller, to service provider)
+    * identity open source APIs to issue DID (to AI, to Caller, to service provider)
+    * identity open source APIs to issue VC (to AI, Caller, service provider)
+    * OSAIS to decompose an AI's attribute to resurface service providers (of GPU, of models, etc...) [this part is not open source, as part of OSAIS internals]
+    * OSAIS to display in UI the status of an AI from its VCs (identity, performance, cost) [I will likely make all open source until getting a JSON, then the UI may be private, to be reviewed]
+
+========================================================================================
+  Tasks done during this milestone [May 2024]
+========================================================================================
+
+ - built the open source framework of the Identity NodeJS app that connects Identus to OSAIS
+ - added ability to register an entity (caller, worker, provider) and assign a DID + create an Identity wallet + create entity's authentication keys into Identus
+ - within OSAIS, implemented assigning a DID to all registered users (callers)
+ - TODO - change OSAIS to allow uploading a new model into a VAI
+ - TODO - change OSAIS to allow uploading a new AI Program into a VAI
+ - TODO - change OSAIS to allow uploading a new config file into a VAI
+ - TODO - with all those changes, a VAI becomes now a AI wrapper host running on a GPU => it is now a GPU service provider
+ - TODO - a AI Prog is also a service provider (program version, etc...) so that it can also receive DID + VCs
+ - TODO - issue a DID to the VAI
+
+ - ??? Produced video report ???
