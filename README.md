@@ -33,6 +33,19 @@ I ran into some issues with DidComm not working with a first setup, then recreat
 11. docker run hello-world
 12. install locally a Identy Agent (such as v 1.28.0): https://github.com/hyperledger/identus/releases/tag/prism-agent-v1.28.0  
 
+(other requirements for scala - necessary?)
+ - install java jdk:  sudo apt-get install openjdk-8-jre
+ - install sbt: see here https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html
+    sudo apt-get update
+    sudo apt-get install apt-transport-https curl gnupg -yqq
+    echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
+    echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | sudo tee /etc/apt/sources.list.d/sbt_old.list
+    curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | sudo -H gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/scalasbt-release.gpg --import
+    sudo chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
+    sudo apt-get update
+    sudo apt-get install sbt
+
+
 After this pre-install, it should work with those commands
 
 => open a wsl terminal
@@ -45,12 +58,19 @@ After this pre-install, it should work with those commands
 // to shut it down
 => docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml down 
 
+with v1.31.0
+DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 PRISM_AGENT_VERSION=1.31.0 PRISM_NODE_VERSION=2.2.1 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
+
+// NEW IDENTUS cmd line
+DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 AGENT_VERSION=1.33.0 PRISM_NODE_VERSION=2.3.0 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
+
 // to inspect
 => docker logs issuer-prism-agent-1
 
 // to check for health
 => wsl
-=> curl http://localhost:8100/prism-agent/_system/health
+=> PRISM:    curl http://localhost:8100/prism-agent/_system/health
+=> IDENTUS:  curl http://localhost:8100/cloud-agent/_system/health
 
 
 Misc helpers for wsl
