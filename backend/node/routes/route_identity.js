@@ -23,12 +23,13 @@ router.get("/entity/:entity", function(req, res, next) {
   });
 });
 
-// POST /entity  (will create entity, wallet, auth key, and auth DID)
+// POST /entity  (will create entity, wallet, auth key, and auth DID) ; note: a caller role will create a new wallet whereas any other role expects 
 router.post("/entity", function(req, res, next) {
     routeUtils.apiPost(req, res, srvIdentus.async_createEntityWithAuth, {
         name:  req.body.name? req.body.name : null,                   // a name for this wallet & entity
-        role:  req.body.role? req.body.role : null,                   // a role for this entity (caller, worker, provider) 
+        role:  req.body.role? req.body.role : null,                   // a role for this entity (caller, worker, provider, admin) 
         mnemonic:  req.body.mnemonic? req.body.mnemonic : null,       // a seed phrase (optional ; if not provided, the API will generate a random one)
+        id_wallet: req.body.id_wallet? req.body.id_wallet : null      // id of the existing wallet (then we do not use mnemonic) 
     });
   });
 
