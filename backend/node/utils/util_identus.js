@@ -81,31 +81,58 @@ const async_getEntityById = async function (objEntity){
     }
 }
 
-const async_createEntityWithAuth = async function (objParam){
+const async_findOrCreateIdentityWallet = async function (objParam){
     try {
+        // does the wallet exist?
+        try {
+            let responseW = await axios.get(getIdentusAgent()+ "wallets/"+objParam.id_wallet, {
+                headers: getAdminHeader()
+            });        
 
-        // make a random double long seed for this entity
-        let mnemonic=objParam.mnemonic;
-        if(!mnemonic) {
-            mnemonic = (await srvCardano.generateSeedPhrase()).data.mnemonic;
+            if(responseW.data.id) {
+                return {
+                    data: responseW.data
+                }
+            }
         }
-        
+        catch(err)  {
+            // create Identity wallet
+            responseW = await axios.post(getIdentusAgent()+ "wallets", {
+                seed: objParam.seed,
+                name: objParam.name
+            }, {
+                headers: getAdminHeader()
+            });        
+            return {
+                data: responseW.data
+            }
+        }
+    
+    }    
+    catch(err)  {
+        throw err;
+    }
+}
+
+const async_createEntityWithAuthForRole = async function (objParam){
+    try {
         // get Cardano wallet keys...
         let objKeys=await srvCardano.getWalletDetails({
-            mnemonic: mnemonic
+            mnemonic: objParam.mnemonic
         });
-
-        // create Identity wallet
-        let responseW = await axios.post(getIdentusAgent()+ "wallets", {
+        
+        // create Identity wallet  / or find existing one
+        let responseW = await async_findOrCreateIdentityWallet({
+            id_wallet: objParam.id_wallet,            // optional (to seach if exist, otherwise we create)
             seed: objKeys.data.seed,
             name: objParam.name
         }, {
             headers: getAdminHeader()
         });
-
-        // we have a new wallet, now create entity 
+        
+        // we have a wallet (new or old), now create entity for the role 
         let responseE = await axios.post(getIdentusAgent()+ "iam/entities", {
-            name: objParam.name,
+            name: objParam.name + " ("+objParam.role+")",
             walletId: responseW.data.id
         }, {
             headers: getAdminHeader()
@@ -126,19 +153,43 @@ const async_createEntityWithAuth = async function (objParam){
             purpose: DID_PURPOSE_AUTH,
             key: key
         })
-        
+
         // return important info
         return {
             data: {
-                id: responseE.data.id,
-                name: objParam.name,
-                role: objParam.role,
+                id_entity: responseE.data.id,      // id of the entity
+                id_wallet: responseW.data.id,      // id of the wallet
+                name: objParam.name,        // name of the wallet ; entity will have (<role>) appended to the name
+                role: objParam.role,        // role of this entity
                 created_at: dateCreatedAt,
-                key: key,
-                public_addr: objKeys.data.addr,
-                didAuth: dataDID ? dataDID.data.did : null,
+                key: key,                   // auth key of the entity
+                public_addr: objKeys.data.addr,     // public address of the wallet used by this entity
+                didAuth: dataDID ? dataDID.data.did : null,     // DID for authenticating this entity into Identus
+                longDid: dataDID ? dataDID.data.longDid: null
             }
         };    
+    }    
+    catch(err)  {
+        throw err;
+    }
+}
+
+const async_createEntityWithAuth = async function (objParam){
+    try {
+        // make a random double long seed for this entity
+        let mnemonic=objParam.mnemonic;
+        if(!mnemonic) {
+            mnemonic = (await srvCardano.generateSeedPhrase()).data.mnemonic;
+        }
+
+        let dataRet = await async_createEntityWithAuthForRole({
+            mnemonic: mnemonic,                 // case new wallet
+            id_wallet: objParam.id_wallet,      // case existing wallet
+            name: objParam.name,
+            role: objParam.role
+        })
+        
+        return dataRet;    
     }
     catch(err)  {
         throw err;
