@@ -1,47 +1,54 @@
 const express = require('express');
 const path = require('path');
-
+const srvIdentus = require("./utils/util_identus");
+const srvUtil = require("./utils/util_services");
 /*
  *      App Inits
  */
 
     module.exports = {
         createApp,
-        initializeApp
+        async_initializeApp
     };
 
     function createApp() {
         return express();
     }
 
-    function initializeApp(objParam) {
-        let app=objParam.app;
-        let config=objParam.config;
+    async function async_initializeApp(objParam) {
+        try {
+            let app=objParam.app;
+            let config=objParam.config;
 
-        // utilities
-        const cors = require('cors');
-        const bodyParser= require('body-parser');
-        const cookieParser=require('cookie-parser');
-        const cookieSession=require('cookie-session');
+            // utilities
+            const cors = require('cors');
+            const bodyParser= require('body-parser');
+            const cookieParser=require('cookie-parser');
+            const cookieSession=require('cookie-session');
 
-        // set the accepted access-control-allow-methods
-        app.use(cors({
-            methods: ["OPTIONS", "PUT", "GET", "POST", "PATCH", "DELETE", "LINK", "UNLINK"]
-        }));
+            // set the accepted access-control-allow-methods
+            app.use(cors({
+                methods: ["OPTIONS", "PUT", "GET", "POST", "PATCH", "DELETE", "LINK", "UNLINK"]
+            }));
 
-        app.use(bodyParser.urlencoded({ extended: false }));
-        app.use(bodyParser.json({limit: '50mb'})); 
-        app.use(require('express-session')({
-            secret: config.jwtKey,
-            name: config.appName,
-            resave: true,
-            saveUninitialized: true,
-            cookie : {
-                sameSite: 'Lax'
-            }
-        }));
+            app.use(bodyParser.urlencoded({ extended: false }));
+            app.use(bodyParser.json({limit: '50mb'})); 
+            app.use(require('express-session')({
+                secret: config.jwtKey,
+                name: config.appName,
+                resave: true,
+                saveUninitialized: true,
+                cookie : {
+                    sameSite: 'Lax'
+                }
+            }));
 
-        async_continueInitialize(app);         
+            await async_continueInitialize(app);         
+            return true;
+        }
+        catch(err) {
+            return false;
+        }
     }
 
     async function async_continueInitialize(app) {
@@ -52,6 +59,15 @@ const path = require('path');
             initializeRoutes(app);
             initializeViews(app);     
 
+            // test Identus agent connection
+            try {
+                await srvIdentus.async_getEntities();
+                srvUtil.consoleLog("Identus is ready!")
+            }
+            catch(err) {
+                srvUtil.consoleLog("FATAL: Identus not found at "+gConfig.identus.host)
+                throw err;
+            }
         }
         catch(err) {
             console.log(err && err.message? err.message : err.statusText);
