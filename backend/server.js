@@ -27,6 +27,7 @@ global.gConfig={
     // identus
     identus: {
         adminKey: null,
+        host: "http://localhost:8100/"
     },
 
     // misc
@@ -45,6 +46,8 @@ _setParams = function(_config) {
     console.log("JWT_SECRET was set");
     if(_config.IDENTUS_ADMIN) {gConfig.identus.adminKey=_config.IDENTUS_ADMIN;}
     console.log("IDENTUS ADMIN KEY WAS SET");
+    if(_config.IDENTUS_HOST) {gConfig.identus.host=_config.IDENTUS_HOST;}
+    console.log("IDENTUS HOST WAS SET TO "+_config.IDENTUS_HOST);
 
     if(_config.EXTRA) {
         return _config.EXTRA;
@@ -136,11 +139,16 @@ console.log("IDENTITY node running here:  "+global.gConfig.origin);
 gConfig.server= server;
 gConfig.app= app;
 
-module_app.initializeApp({
+module_app.async_initializeApp({
     app: app,
     env: process.env.NODE_ENV,
     config: gConfig,
-});
+    })
+    .then(bOK => {
+        if(!bOK) {
+            process.exit(1);  
+        }
+    })
 
 process.on('uncaughtException', function (err) {
     console.error((new Date).toUTCString() + ' uncaughtException:', err.message);

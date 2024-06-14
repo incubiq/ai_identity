@@ -19,11 +19,11 @@ const getIdentusAdminKey = () => {
 }
 
 const getIdentusHost = () => {
-    return "http://localhost:8100/";
+    return gConfig.identus.host;
 }
 
 const getIdentusAgent = () => {
-    return getIdentusHost() + "prism-agent/";
+    return getIdentusHost() + "cloud-agent/";
 }
 
 const getAdminHeader = () => {
