@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const routeUtils = require('./route_utils');
-const srvIdentus = require("../utils/util_identus");
+const srvIdentus = require("../utils/util_identus_connections");
 
 // all routes here start with               api/v1/p2p/
 

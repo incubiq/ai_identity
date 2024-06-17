@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const srvIdentus = require("./utils/util_identus");
+const srvIdentus = require("./utils/util_identus_identity");
 const srvUtil = require("./utils/util_services");
 /*
  *      App Inits
@@ -158,8 +158,10 @@ const srvUtil = require("./utils/util_services");
 
         // Our routes 
         const routeWallet = require('./routes/route_wallet');
-        const routeIdentity = require('./routes/route_identity');
-        const routeCredentials = require('./routes/route_credentials');
+        const routeConnections = require('./routes/route_connections');
+        const routeIdentity = require('./routes/route_did_identity');
+        const routeSchema = require('./routes/route_did_schema');
+        const routeCredentials = require('./routes/route_did_credentials');
         const routePublicAPI = require('./routes/route_public');
         const routePrivateAdminAPI = require('./routes/route_private_admin');
 
@@ -169,13 +171,11 @@ const srvUtil = require("./utils/util_services");
             next();
         };
 
-        // wallet route
+        // all DID routes
         app.use('/api/v1/wallet', routeWallet);
-
-        // identity route
+        app.use('/api/v1/p2p', routeConnections);
         app.use('/api/v1/identity', routeIdentity);
-
-        // VC route
+        app.use('/api/v1/schema', routeSchema);
         app.use('/api/v1/vc', routeCredentials);
 
         // public API route
