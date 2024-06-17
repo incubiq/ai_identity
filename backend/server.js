@@ -23,6 +23,7 @@ global.gConfig={
   
     prod:"https://identity.opensourceais.com/",
     debug: "http://localhost:"+_port+"/", 
+    tunnel: null,                           // the tunnel (use only for debug)
 
     // identus
     identus: {
@@ -48,6 +49,8 @@ _setParams = function(_config) {
     console.log("IDENTUS ADMIN KEY WAS SET");
     if(_config.IDENTUS_HOST) {gConfig.identus.host=_config.IDENTUS_HOST;}
     console.log("IDENTUS HOST WAS SET TO "+_config.IDENTUS_HOST);
+    if(_config.TUNNEL) {gConfig.tunnel=_config.TUNNEL;}
+    console.log("TUNNEL WAS SET TO "+_config.TUNNEL);
 
     if(_config.EXTRA) {
         return _config.EXTRA;

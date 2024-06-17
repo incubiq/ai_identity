@@ -1,5 +1,6 @@
 {
     "PROD":   false,
     "IDENTUS_ADMIN" :  "my-admin-token",
-    "IDENTUS_HOST" :  "https://periodically-vancouver-bills-nationally.trycloudflare.com/"
+    "IDENTUS_HOST" :  "https://silent-stationery-officials-tickets.trycloudflare.com/",
+    "TUNNEL":  "https://casio-harris-idol-chest.trycloudflare.com/"
 }

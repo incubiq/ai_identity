@@ -1,0 +1,43 @@
+{
+    "$id": "https://casio-harris-idol-chest.trycloudflare.com/assets/schema/test.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "name": "test",
+    "version": "1.0.0",
+    "description": "A Test Schema",
+    "type": "object",
+    "issuerId": "did:prism:93da47c5f8975efce6a0d777aa493bc0d321a0d977fad121469983c0cda10e3d",
+    "attrNames": [
+        "AI",
+        "model",
+        "location"
+      ],
+    "properties": {
+    "uid": {
+        "type": "string"
+    },
+    "name": {
+        "type": "string"
+    },
+    "model": {
+        "type": "string"
+    },
+    "repo": {
+        "type": "string"
+    },
+    "location": {
+        "type": "string"
+    },
+    "gpu": {
+        "type": "string"
+    }
+    },
+    "required": [
+    "uid",
+    "name",
+    "model",
+    "repo",
+    "location",
+    "gpu"
+    ],
+    "additionalProperties": true
+}
