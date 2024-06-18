@@ -28,9 +28,8 @@ router.get("/:id", function(req, res, next) {
 // POST - request to establish a p2p connection
 router.post("/invite", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentus.async_createInvite, {
-    didFrom:  req.body.from? req.body.from : null,                    // strictly not required, but using to generate nicely formed message (TODO: is this a privacy issue?)
-    didTo:  req.body.to? req.body.to : null,                          // strictly not required, but using to generate nicely formed message (TODO: is this a privacy issue?)
-    key: req.headers.apikey? req.headers.apikey: null                 // apikey to get in the header...
+    from:  req.body.from? req.body.from : null,                    // strictly not required, but using to generate nicely formed message 
+    key: req.headers.apikey? req.headers.apikey: null              // apikey to get in the header...
     // TODO
   });
 });

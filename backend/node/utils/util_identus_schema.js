@@ -21,7 +21,7 @@ const async_getSchemas = async function (objParam){
         let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "/schema-registry/schemas", {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
-        return {data: response.data};    
+        return {data: response.data.contents};    
     }
     catch(err)  {
         throw err;
@@ -157,7 +157,7 @@ const async_ensureSchemas = async function (objParam) {
                 let item=objParam.aSchema[i];
 
                 // check we have it registered... (same name, version and author)
-                let j=_data.data.contents.findIndex(function (x) {return (x.name===item.name && x.author===item.author)});
+                let j=_data.data.findIndex(function (x) {return (x.name===item.name && x.author===item.author)});
                 let _isRegistered=(j!=-1);
                 if(!_isRegistered) {
                     // create
@@ -178,7 +178,10 @@ const async_ensureSchemas = async function (objParam) {
                     }
                 }
                 else {
-                    if (_data.data.contents[i].version < item.version) {
+                    j=_data.data.findIndex(function (x) {return (x.name===item.name && x.author===item.author && x.version===item.version)});
+
+                    // this version does not exist, we add it
+                    if (j===-1) {
                         // update
                         try {
                             async_updateSchema({
@@ -196,6 +199,9 @@ const async_ensureSchemas = async function (objParam) {
                         catch(err)  {
                             consoleLog("Could not update Schema "+item.name)
                         }
+                    }
+                    else {
+                        // we already have it... 
                     }
                 }
             }

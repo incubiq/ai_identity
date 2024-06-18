@@ -34,7 +34,7 @@ const async_createVCDefinition = async function (objParam) {
             "signatureType": "CL",
             "supportRevocation": true
         }
-        let responseDef = await axios.post(getIdentusAgent()+ "credential-definition-registry/definitions",  _jsonVCDefinition, {
+        let responseDef = await axios.post(srvIdentusUtils.getIdentusAgent()+ "credential-definition-registry/definitions",  _jsonVCDefinition, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -50,7 +50,7 @@ const async_createVCDefinition = async function (objParam) {
 const async_getAllVCDefinitions = async function (objParam) {
     try {   
 
-        let responseDef = await axios.get(getIdentusAgent()+ "credential-definition-registry/definitions", {
+        let responseDef = await axios.get(srvIdentusUtils.getIdentusAgent()+ "credential-definition-registry/definitions", {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -66,7 +66,7 @@ const async_getAllVCDefinitions = async function (objParam) {
 const async_getVCDefinition = async function (objParam) {
     try {   
 
-        let responseDef = await axios.get(getIdentusAgent()+ "credential-definition-registry/definitions/"+objParam.guid, {
+        let responseDef = await axios.get(srvIdentusUtils.getIdentusAgent()+ "credential-definition-registry/definitions/"+objParam.guid, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
