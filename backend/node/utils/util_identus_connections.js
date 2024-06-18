@@ -14,7 +14,7 @@ const axios = require('axios').default;
 const async_getAllConnectionsForEntity = async function(objParam) {
     try {  
         // get all connections
-        let responseP2P = await axios.get(getIdentusAgent()+ "connections", {
+        let responseP2P = await axios.get(srvIdentusUtils.getIdentusAgent()+ "connections", {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -31,7 +31,7 @@ const async_getAllConnectionsForEntity = async function(objParam) {
 const async_getConnectionById = async function(objParam) {
     try {  
         // get this connection
-        let responseP2P = await axios.get(getIdentusAgent()+ "connections/"+objParam.id, {
+        let responseP2P = await axios.get(srvIdentusUtils.getIdentusAgent()+ "connections/"+objParam.id, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -48,8 +48,8 @@ const async_getConnectionById = async function(objParam) {
 const async_createInvite = async function(objParam) {
     try {  
         // create a connection request
-        let responseP2P = await axios.post(getIdentusAgent()+ "connections", {
-            label: "p2p initiated by " + objParam.from+ " for "+objParam.to,
+        let responseP2P = await axios.post(srvIdentusUtils.getIdentusAgent()+ "connections", {
+            label: "p2p initiated by " + (objParam.from? objParam.from : "Anon"),
             goalcode: "p2p",
             goal: "p2p connection"
         }, {
@@ -69,7 +69,7 @@ const async_createInvite = async function(objParam) {
 const async_acceptInvite = async function(objParam) {
     try {  
         // accept a connection request
-        let responseP2P = await axios.post(getIdentusAgent()+ "connection-invitations", {
+        let responseP2P = await axios.post(srvIdentusUtils.getIdentusAgent()+ "connection-invitations", {
             invitation: objParam.invitation,
         }, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)

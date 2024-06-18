@@ -31,7 +31,7 @@ const async_createVCOffer = async function (objParam) {
             "issuingDID": "did:prism:a91d1b1b53eb65b15202261c8b821b5e3a94a394050eaf7056d4d6e35e0b7267",
             "connectionId": "6d9022b7-9000-4ba4-ac3c-5fdb2d81d1ec"
         }
-        let responseVC = await axios.post(getIdentusAgent()+ "issue-credentials/credential-offers",  _jsonVCOffer, {
+        let responseVC = await axios.post(srvIdentusUtils.getIdentusAgent()+ "issue-credentials/credential-offers",  _jsonVCOffer, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -47,7 +47,7 @@ const async_createVCOffer = async function (objParam) {
 const async_getAllVCPendingOffers = async function (objParam) {
     try {   
 
-        let response = await axios.get(getIdentusAgent()+ "issue-credentials/records", {
+        let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "issue-credentials/records", {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -63,7 +63,7 @@ const async_getAllVCPendingOffers = async function (objParam) {
 const async_getVCPendingOffer = async function (objParam) {
     try {   
 
-        let response = await axios.get(getIdentusAgent()+ "issue-credentials/records/"+objParam.id, {
+        let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "issue-credentials/records/"+objParam.id, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -79,7 +79,7 @@ const async_getVCPendingOffer = async function (objParam) {
 const async_acceptVCOffer = async function (objParam) {
     try {   
 
-        let responseSchema = await axios.post(getIdentusAgent()+ "issue-credentials/records/"+objParam.id+"/accept-offer",  {
+        let responseSchema = await axios.post(srvIdentusUtils.getIdentusAgent()+ "issue-credentials/records/"+objParam.id+"/accept-offer",  {
             subjectId: objParam.did
         }, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
@@ -97,7 +97,7 @@ const async_acceptVCOffer = async function (objParam) {
 const async_issueVC = async function (objParam) {
     try {   
 
-        let responseSchema = await axios.post(getIdentusAgent()+ "issue-credentials/records/"+objParam.id+"/issue-credential",  _jsonVCOffer, {
+        let responseSchema = await axios.post(srvIdentusUtils.getIdentusAgent()+ "issue-credentials/records/"+objParam.id+"/issue-credential",  _jsonVCOffer, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -117,7 +117,7 @@ const async_issueVC = async function (objParam) {
 const async_getAllVCPresentationRequests = async function (objParam) {
     try {   
 
-        let response = await axios.get(getIdentusAgent()+ "present-proof/presentations", {
+        let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "present-proof/presentations", {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -133,7 +133,7 @@ const async_getAllVCPresentationRequests = async function (objParam) {
 const async_getVCPresentationRequestByThid = async function (objParam) {
     try {   
 
-        let response = await axios.get(getIdentusAgent()+ "present-proof/presentations?thid="+objParam.thid, {
+        let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "present-proof/presentations?thid="+objParam.thid, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)
         });
 
@@ -149,7 +149,7 @@ const async_getVCPresentationRequestByThid = async function (objParam) {
 const async_createVCPresentationRequest = async function (objParam) {
     try {   
 
-        let response = await axios.post(getIdentusAgent()+ "present-proof/presentations/", {
+        let response = await axios.post(srvIdentusUtils.getIdentusAgent()+ "present-proof/presentations/", {
             connectionId: objParam.connectionId,
             proofs: [],
             options:{
@@ -175,7 +175,7 @@ const async_acceptVCPresentation = async function (objParam) {
     try {   
 
         // patching presentation
-        let response = await axios.patch(getIdentusAgent()+ "present-proof/presentations/"+objParam.id, {
+        let response = await axios.patch(srvIdentusUtils.getIdentusAgent()+ "present-proof/presentations/"+objParam.id, {
             action: "request-accept",
             proofId: [objParam.proofId]
         }, {
@@ -196,7 +196,7 @@ const async_getVCProof = async function (objParam) {
     try {   
 
         // patching presentation
-        let response = await axios.patch(getIdentusAgent()+ "present-proof/presentations/"+objParam.id, {
+        let response = await axios.patch(srvIdentusUtils.getIdentusAgent()+ "present-proof/presentations/"+objParam.id, {
             action: "presentation-accept"
         }, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)

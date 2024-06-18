@@ -5,23 +5,21 @@
 
 [ORIGINAL SPEC] OUTPUTS
 Open source GitHub repo containing all code and APIs to:
- - assign DID to a virtualised AI (the AI is running in docker and accessible via openseourceais.com) 
- - create a Verified Credential for this AI
- - get general information and stats from this AI, in the form of a JSON format
+ - Represent an AI on-chain (likely as a NFT, but could change based on Milestone 1 research)
+ - Execute an AI's service (where the AI takes input, processes, and gives output)
+ - Process the cost of the transaction and attributes earnings to the AI 
 
 [ORIGINAL SPEC] ACCEPTANCE CRITERIA
- - The AI is assigned a DID
- - The AI has one or multiple Verified Credentials
+ - An AI's service can be called
+ - The cost of the service is billed to the caller and produces income for the AI
  - Additional milestone 1 outcomes are satisfied
 
-M2 - NEW PLAN AFTER M1 DESIGN review
-    * wrap Identus APIs for our needs in a separate open source "identity" nodeJS app (will likely host it on identity.opensourceais.com)
-    * make OSAIS as admin + issuer & verifier of VCs of this identity platform
-    * identity open source APIs to issue wallets (to AI, to Caller, to service provider)
-    * identity open source APIs to issue DID (to AI, to Caller, to service provider)
-    * identity open source APIs to issue VC (to AI, Caller, service provider)
-    * OSAIS to decompose an AI's attribute to resurface service providers (of GPU, of models, etc...) [this part is not open source, as part of OSAIS internals]
-    * OSAIS to display in UI the status of an AI from its VCs (identity, performance, cost) [I will likely make all open source until getting a JSON, then the UI may be private, to be reviewed]
+M3 - NEW PLAN AFTER M1 DESIGN review
+    * the onchain representation of the AI is now its Identus identity wallet + VCs (not an NFT)
+    * identity open source to verify VCs 
+    * OSAIS to make use of the identity open source APIs to execute an AI's transaction and generate VCs
+    * OSAIS to verify payment claims and make end of month settlements between all parties  
+
 
 ========================================================================================
   Tasks done during this milestone [May 2024]
@@ -31,6 +29,7 @@ M2 - NEW PLAN AFTER M1 DESIGN review
  - added ability to register an entity (caller, worker, provider, admin) and assign a DID + create an Identity wallet + create entity's authentication keys into Identus
  - a wallet can have several entities (one per type), and each entity has one separate authentication key + one DID
  - within OSAIS, implemented assigning a DID (caller) to any registered actor in the ecosystem + registering OSAIS itself as admin + all registered users receive a callers DID
+
 
  
  - TODO - change OSAIS to allow uploading a new model into a VAI
