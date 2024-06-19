@@ -13,23 +13,16 @@ const axios = require('axios').default;
 
 const async_createVCOffer = async function (objParam) {
     try {   
-
+    
         let _jsonVCOffer = {
-            "validityPeriod": 3600,
-            "schemaId": objParam.schemaLocation,
-            "credentialDefinitionId": "620d3402-b1ca-474e-a1b9-1ad81e07dfee",
+            "validityPeriod": objParam.validity,
+            "schemaId": objParam.location,
+            "credentialDefinitionId": objParam.definition,
             "credentialFormat": "JWT",
-            "claims": {
-                "uid": "99999",
-                "name": "Stable Diffusion SDXL",
-                "model": "sd_xl_refiner_1.0.safetensors",
-                "repo": "https://github.com/Stability-AI/generative-models",
-                "location": "https://yahoo-pensions-concerns-quantum.trycloudflare.com/",
-                "gpu": "RTX 3090"
-            },
+            "claims": objParam.claims,
             "automaticIssuance": false,
-            "issuingDID": "did:prism:a91d1b1b53eb65b15202261c8b821b5e3a94a394050eaf7056d4d6e35e0b7267",
-            "connectionId": "6d9022b7-9000-4ba4-ac3c-5fdb2d81d1ec"
+            "issuingDID": objParam.author,
+            "connectionId": objParam.connection
         }
         let responseVC = await axios.post(srvIdentusUtils.getIdentusAgent()+ "issue-credentials/credential-offers",  _jsonVCOffer, {
             headers: srvIdentusUtils.getEntityHeader(objParam.key)

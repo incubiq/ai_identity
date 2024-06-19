@@ -13,11 +13,11 @@ const axios = require('axios').default;
 
 const async_createVCDefinition = async function (objParam) {
     try {   
-        if (!objParam || !objParam.name || !objParam.version || !objParam.description || !objParam.author || !objParam.aProp) {
+        if (!objParam || !objParam.name || !objParam.version || !objParam.description || !objParam.author || !objParam.location) {
             throw {
                 data: null,
                 status: 400,
-                message: "Bad params for creating Schema"
+                message: "Bad params for creating VC Definition"
             }
         }
         // remove spaces in name
@@ -28,7 +28,7 @@ const async_createVCDefinition = async function (objParam) {
             "name":objParam.name,
             "description": objParam.description,
             "version": objParam.version,
-            "tag": objParam.aTag,       // TODO check if supports array or only ""
+            "tag": objParam.tags? objParam.tags : "", 
             "author": objParam.author,
             "schemaId": objParam.location,
             "signatureType": "CL",

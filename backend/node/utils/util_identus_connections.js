@@ -19,7 +19,7 @@ const async_getAllConnectionsForEntity = async function(objParam) {
         });
 
         return {
-            data: responseP2P.data
+            data: responseP2P.data.contents
         }
     }
     catch(err)  {
