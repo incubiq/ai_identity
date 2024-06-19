@@ -33,8 +33,8 @@ router.post("/definition", function(req, res, next) {
     version: req.body.version? req.body.version : "1.0.0",  // version for this definition (optional)
     description:  req.body.description? req.body.description : null,     // description for this definition (compulsory)
     author:  req.body.author? req.body.author : null,       // published short DID of author for this definition (compulsory)
-    aTag:  req.body.aTag? req.body.aTag : [],               // array of tag strings
-    schema:  req.body.schema? req.body.schema : null,       // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
+    tags:  req.body.tags? req.body.tags : [],               // string of comma separated tags
+    location:  req.body.location? req.body.location : null,       // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
     key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
   });
 });
@@ -46,13 +46,13 @@ router.post("/definition", function(req, res, next) {
 // POST VC offer 
 router.post("/offer", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentusCreds.async_createVCOffer, {
-    name:  req.body.name? req.body.name : null,             // name for this definition (compulsory)
-    version: req.body.version? req.body.version : "1.0.0",  // version for this definition (optional)
-    description:  req.body.description? req.body.description : null,     // description for this definition (compulsory)
-    author:  req.body.author? req.body.author : null,       // published short DID of author for this definition (compulsory)
-    aTag:  req.body.aTag? req.body.aTag : [],               // array of tag strings
-    schema:  req.body.schema? req.body.schema : null,       // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
-    key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
+    connection:  req.body.connection? req.body.connection : null,   // didComm connection_id for exchanging request (offer/accept)
+    author:  req.body.author? req.body.author : null,               // published short DID of author for this offer
+    validity:  req.body.validity? req.body.validity : 3600,         // offer valid for x seconds (1h by defalut)
+    definition:  req.body.definition? req.body.definition : null,   // id of the definition VC 
+    location:  req.body.location? req.body.location : null,         // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
+    claims:  req.body.claims? req.body.claims : {},                 // the claims to be issued in the VC (no idea why they are here, they are already in the definition)
+    key: req.headers.apikey? req.headers.apikey: null               // apikey to get in the header...    
   });
 });
 
