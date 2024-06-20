@@ -5,7 +5,6 @@
 
 const srvCardano = require("./util_cardano");
 const srvIdentusUtils = require("./util_identus_utils");
-const axios = require('axios').default;
 const crypto = require('crypto');
 const HASH_ALGORITHM = "sha256"; // NOTE: must match the algorithm in api auth2admin
 
@@ -17,37 +16,18 @@ const DID_PURPOSE_ISSUANCE = "issue"
  */
 
 const async_getEntities = async function (){
-    try {
-        let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "iam/entities", {
-            headers: srvIdentusUtils.getAdminHeader()
-        });
-        return {data: response.data};    
-    }
-    catch(err)  {
-        throw err;
-    }
+    return srvIdentusUtils.async_simpleGet("iam/entities/", null);
 }
 
 const async_getEntityById = async function (objEntity){
-    try {
-        let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "iam/entities/"+objEntity.entity, {
-            headers: srvIdentusUtils.getAdminHeader()
-        });
-        return {data: response.data};    
-    }
-    catch(err)  {
-        throw err;
-    }
+    return srvIdentusUtils.async_simpleGet("iam/entities/"+objEntity.entity, null);
 }
 
 const async_findOrCreateIdentityWallet = async function (objParam){
     try {
         // does the wallet exist?
         try {
-            let responseW = await axios.get(srvIdentusUtils.getIdentusAgent()+ "wallets/"+objParam.id_wallet, {
-                headers: srvIdentusUtils.getAdminHeader()
-            });        
-
+            let responseW = await srvIdentusUtils.async_simpleGet("wallets/"+objParam.id_wallet, null);
             if(responseW.data.id) {
                 return {
                     data: responseW.data
@@ -56,15 +36,10 @@ const async_findOrCreateIdentityWallet = async function (objParam){
         }
         catch(err)  {
             // create Identity wallet
-            responseW = await axios.post(srvIdentusUtils.getIdentusAgent()+ "wallets", {
+            return srvIdentusUtils.async_simplePost("wallets/", null, {
                 seed: objParam.seed,
                 name: objParam.name
-            }, {
-                headers: srvIdentusUtils.getAdminHeader()
-            });        
-            return {
-                data: responseW.data
-            }
+            });
         }
     
     }    
@@ -90,21 +65,17 @@ const async_createEntityWithAuthForRole = async function (objParam){
         });
         
         // we have a wallet (new or old), now create entity for the role 
-        let responseE = await axios.post(srvIdentusUtils.getIdentusAgent()+ "iam/entities", {
+        let responseE = await srvIdentusUtils.async_simplePost("iam/entities/", null, {
             name: objParam.name + " ("+objParam.role+")",
             walletId: responseW.data.id
-        }, {
-            headers: srvIdentusUtils.getAdminHeader()
         });
 
         // register auth key
         let dateCreatedAt=new Date(responseE.data.createdAt);
         let key= crypto.createHash(HASH_ALGORITHM).update(objKeys.data.seed+ objParam.name+objParam.role+ dateCreatedAt.toUTCString()).digest('hex');
-        let responseK = await axios.post(srvIdentusUtils.getIdentusAgent()+ "iam/apikey-authentication", {
+        let responseK = await srvIdentusUtils.async_simplePost("iam/apikey-authentication/", null, {
             entityId: responseE.data.id,
             apiKey: key
-        }, {
-            headers: srvIdentusUtils.getAdminHeader()
         });
 
         // we create a did for Auth
@@ -169,14 +140,10 @@ const async_createAndPublishDid = async function (objParam){
             "services": []
           }
         };
-        let responseDid = await axios.post(srvIdentusUtils.getIdentusAgent()+ "did-registrar/dids",  doc, {
-            headers: srvIdentusUtils.getEntityHeader(objParam.key)
-        });
+        let responseDid = await srvIdentusUtils.async_simplePost("did-registrar/dids/", objParam.key, doc)
 
         // now publish
-        let responsePub = await axios.post(srvIdentusUtils.getIdentusAgent()+ "did-registrar/dids/"+responseDid.data.longFormDid+"/publications",  {}, {
-            headers: srvIdentusUtils.getEntityHeader(objParam.key)
-        });
+        let responsePub = await srvIdentusUtils.async_simplePost("did-registrar/dids/"+responseDid.data.longFormDid+"/publications", objParam.key, {})
 
         return {
             data: {
@@ -205,9 +172,7 @@ const async_updateAndPublishDid = async function (objFind, objUpdate) {
         ]}
 
         // now update
-        let responseDid = await axios.post(srvIdentusUtils.getIdentusAgent()+ "did-registrar/dids/"+objFind.did+"/updates",  doc, {
-            headers: srvIdentusUtils.getEntityHeader(objUpdate.key)
-        });
+        let responseDid = await srvIdentusUtils.async_simplePost("did-registrar/dids/"+objFind.did+"/updates", objParam.key, doc)
 
         return {
             data: {
@@ -223,21 +188,10 @@ const async_updateAndPublishDid = async function (objFind, objUpdate) {
 
 const async_getDidForEntity = async function (objParam){
     try {
-        let _url=srvIdentusUtils.getIdentusAgent()+ "did-registrar/dids";
-        let _header = srvIdentusUtils.getEntityHeader(objParam.key);
         if(objParam.did) {
-            _url=srvIdentusUtils.getIdentusAgent()+ "dids/"+objParam.did;
-            _header = srvIdentusUtils.getAdminHeader();
+            return srvIdentusUtils.async_simpleGet("dids/"+objParam.did, null);
         }
-
-        // get all dids
-        let responseDid = await axios.get(_url, {
-            headers:  _header
-        });
-
-        return {
-            data: responseDid.data
-        }
+        return srvIdentusUtils.async_simpleGet("did-registrar/dids/", objParam.key);
     }
     catch(err)  {
         throw err;

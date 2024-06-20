@@ -7,9 +7,6 @@ const srvIdentusUtils = require("./util_identus_utils");
 const fs = require("fs");
 const path=require('path');
 const { consoleLog } = require("./util_services");
-const axios = require('axios').default;
-
-
 
 /*
  *       Schemas
@@ -17,28 +14,12 @@ const axios = require('axios').default;
 
 // get all schemas issued by this entity (authenticated by key)
 const async_getSchemas = async function (objParam){
-    try {
-        let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "/schema-registry/schemas", {
-            headers: srvIdentusUtils.getEntityHeader(objParam.key)
-        });
-        return {data: response.data.contents};    
-    }
-    catch(err)  {
-        throw err;
-    }
+    return srvIdentusUtils.async_simpleGet("schema-registry/schemas/"+objParam.id, objParam.key);
 }
 
 // get one schema (by id) issued by this entity (authenticated by key)
 const async_getSchemaById = async function (objParam){
-    try {
-        let response = await axios.get(srvIdentusUtils.getIdentusAgent()+ "/schema-registry/schemas/"+objParam.id, {
-            headers: srvIdentusUtils.getEntityHeader(objParam.key)
-        });
-        return {data: response.data};    
-    }
-    catch(err)  {
-        throw err;
-    }
+    return srvIdentusUtils.async_simpleGet("schema-registry/schemas/"+objParam.id, objParam.key);
 }
 
 // note : objparam must contain : {name: ..., version: ..., description: ..., author: ..., aTag: ["...", ""..."], aProp: [{name:..., type:..., isRequired:T/F}, {...}], root:"https://opensourceAIs.com/assets/credentials/" }
@@ -107,14 +88,8 @@ const async_createSchema = async function (objParam) {
     try {   
         let _doc =  await _async_createSchema(objParam);
 
-        // create schema
-        let responseSchema = await axios.post(srvIdentusUtils.getIdentusAgent()+ "schema-registry/schemas",  _doc, {
-            headers: srvIdentusUtils.getEntityHeader(objParam.key)
-        });
-
-        return {
-            data: responseSchema.data
-        }
+        // call Identus to create schema 
+        return srvIdentusUtils.async_simplePost("schema-registry/schemas/"+objParam.id, objParam.key, _doc);
     }
     catch(err)  {
         throw err;
@@ -127,14 +102,8 @@ const async_updateSchema = async function (objParam) {
         let _doc =  await _async_createSchema(objParam);
 
         // update schema
-        let responseSchema = await axios.put(srvIdentusUtils.getIdentusAgent()+ "schema-registry/"+_doc.author+"/"+objParam.id,  _doc, {
-            headers: srvIdentusUtils.getEntityHeader(objParam.key)
-        });
-
-        return {
-            data: responseSchema.data
-        }
-        }
+        return srvIdentusUtils.async_simplePost("schema-registry/schemas/"+_doc.author+"/"+objParam.id, objParam.key, _doc);
+    }
     catch(err)  {
         throw err;
     }
