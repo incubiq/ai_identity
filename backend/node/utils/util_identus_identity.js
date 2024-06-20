@@ -190,6 +190,36 @@ const async_createAndPublishDid = async function (objParam){
     }
 }
 
+// mainly for adding issuance capability to a DID
+const async_updateAndPublishDid = async function (objFind, objUpdate) {
+    try {
+        // update did
+        let doc={"actions": [
+            {
+                "actionType": "ADD_KEY",
+                "addKey": {
+                  "id": objUpdate.id? objUpdate.id : "issue-2",
+                   "purpose": objUpdate.purpose === DID_PURPOSE_AUTH? "authentication" : objUpdate.purpose === DID_PURPOSE_ISSUANCE? "assertionMethod" : "unknown"
+                }
+            }
+        ]}
+
+        // now update
+        let responseDid = await axios.post(srvIdentusUtils.getIdentusAgent()+ "did-registrar/dids/"+objFind.did+"/updates",  doc, {
+            headers: srvIdentusUtils.getEntityHeader(objUpdate.key)
+        });
+
+        return {
+            data: {
+                did: objFind.did,
+                wasUpdated: true
+            }
+        }
+    }
+    catch(err)  {
+        throw err;
+    }
+}
 
 const async_getDidForEntity = async function (objParam){
     try {
@@ -223,5 +253,6 @@ module.exports = {
     async_getEntityById,
     async_createEntityWithAuth,
     async_createAndPublishDid,
+    async_updateAndPublishDid,
     async_getDidForEntity,
 }

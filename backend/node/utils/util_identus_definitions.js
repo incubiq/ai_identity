@@ -55,7 +55,7 @@ const async_getAllVCDefinitions = async function (objParam) {
         });
 
         return {
-            data: responseDef.data
+            data: responseDef.data.contents
         }
     }
     catch(err)  {

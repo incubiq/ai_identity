@@ -26,8 +26,8 @@ router.get("/entity/:entity", function(req, res, next) {
 // POST /entity  (will create entity, wallet, auth key, and auth DID) ; note: a caller role will create a new wallet whereas any other role expects 
 router.post("/entity", function(req, res, next) {
     routeUtils.apiPost(req, res, srvIdentus.async_createEntityWithAuth, {
-        name:  req.body.name? req.body.name : null,                   // a name for this wallet & entity
-        role:  req.body.role? req.body.role : null,                   // a role for this entity (caller, worker, provider, admin) 
+        name:  req.body && req.body.name? req.body.name : null,                   // a name for this wallet & entity
+        role:  req.body && req.body.role? req.body.role : null,                   // a role for this entity (caller, worker, provider, admin) 
         mnemonic:  req.body.mnemonic? req.body.mnemonic : null,       // a seed phrase (optional ; if not provided, the API will generate a random one)
         id_wallet: req.body.id_wallet? req.body.id_wallet : null      // id of the existing wallet (then we do not use mnemonic) 
     });
@@ -54,8 +54,19 @@ router.get("/dids/:did", function(req, res, next) {
 // POST /did  (will create a DID for a purpose)  (apikey of calling entity in the header {apikey: ...})
 router.post("/did", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentus.async_createAndPublishDid, {
-      id:  req.body.id? req.body.id : "key-2",                             // a short ID for the DID doc entry (eg: "key-2")
-      purpose:  req.body.purpose? req.body.purpose : "authentication",     // purpose of the DID that will be created (if null, no DID created)
+      id:  req.body && req.body.id? req.body.id : "key-2",                             // a short ID for the DID doc entry (eg: "key-2")
+      purpose:  req.body && req.body.purpose? req.body.purpose : "authentication",     // purpose of the DID that will be created (if null, no DID created)
+      key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
+  });
+});
+
+// POST /did  (will create a DID for a purpose)  (apikey of calling entity in the header {apikey: ...})
+router.patch("/did/:did", function(req, res, next) {
+  routeUtils.apiPatch(req, res, srvIdentus.async_updateAndPublishDid, {
+      did:  req.params.did? req.params.did : null,                         // the (short) DID to update 
+  }, {
+      id:  req.body && req.body.id? req.body.id : "issue-2",                           // a short ID for the DID doc entry (eg: "key-2")
+      purpose:  req.body && req.body.purpose? req.body.purpose : "issue",              // purpose of the DID that will be updated (if null, no update)
       key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
   });
 });
