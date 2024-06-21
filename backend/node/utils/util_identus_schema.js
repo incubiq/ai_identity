@@ -14,7 +14,7 @@ const { consoleLog } = require("./util_services");
 
 // get all schemas issued by this entity (authenticated by key)
 const async_getSchemas = async function (objParam){
-    return srvIdentusUtils.async_simpleGet("schema-registry/schemas/"+objParam.id, objParam.key);
+    return srvIdentusUtils.async_simpleGet("schema-registry/schemas/", objParam.key);
 }
 
 // get one schema (by id) issued by this entity (authenticated by key)

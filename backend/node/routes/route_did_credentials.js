@@ -44,30 +44,31 @@ router.post("/definition", function(req, res, next) {
  */
 
 // POST VC offer 
-router.post("/offer", function(req, res, next) {
-  routeUtils.apiPost(req, res, srvIdentusCreds.async_createVCOffer, {
+router.post("/offer-noschema", function(req, res, next) {
+  routeUtils.apiPost(req, res, srvIdentusCreds.async_createVCOfferWithoutSchema, {
     connection:  req.body.connection? req.body.connection : null,   // didComm connection_id for exchanging request (offer/accept)
     author:  req.body.author? req.body.author : null,               // published short DID of author for this offer
     validity:  req.body.validity? req.body.validity : 3600,         // offer valid for x seconds (1h by defalut)
-    definition:  req.body.definition? req.body.definition : null,   // id of the definition VC 
-    location:  req.body.location? req.body.location : null,         // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
+//    definition:  req.body.definition? req.body.definition : null,   // id of the definition VC 
+//    location:  req.body.location? req.body.location : null,         // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
     claims:  req.body.claims? req.body.claims : {},                 // the claims to be issued in the VC (no idea why they are here, they are already in the definition)
     key: req.headers.apikey? req.headers.apikey: null               // apikey to get in the header...    
   });
 });
 
-// GET all issued records, ie pending VC offers (point of view of Issuer or of Receiver)
+// GET all issued records, ie pending, accepted, or issued VC offers (point of view of Issuer or of Receiver)
 router.get("/offers", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusCreds.async_getAllVCPendingOffers, {
-    key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
+  routeUtils.apiGet(req, res, srvIdentusCreds.async_getAllVCOffers, {
+    thid: req.query.thid? req.query.thid: null,                   // thid in the query?
+    key: req.headers.apikey? req.headers.apikey: null             // apikey to get in the header...
   });
 });
 
-// GET a specific pending VC offer (point of view of Issuer or of Receiver)
+// GET a specific VC offer (point of view of Issuer or of Receiver)
 router.get("/offer/:id", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusCreds.async_getVCPendingOffer, {
-    id: req.params.id? req.params.id: null,                    // id of the pending offer to search for (compulsory)
-    key: req.headers.apikey? req.headers.apikey: null                // apikey to get in the header...
+  routeUtils.apiGet(req, res, srvIdentusCreds.async_getVCOffer, {
+    recordId: req.params.recordId? req.params.recordId: null,     // id of the pending offer to search for (compulsory)
+    key: req.headers.apikey? req.headers.apikey: null             // apikey to get in the header...
   });
 });
 
@@ -75,7 +76,7 @@ router.get("/offer/:id", function(req, res, next) {
 // POST VC accept 
 router.post("/accept", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentusCreds.async_acceptVCOffer, {
-    id: req.body.id? req.body.id: null,                       // id of the pending offer to accept (compulsory / point of view of receiver)
+    recordId: req.body.recordId? req.body.recordId: null,     // id of the pending offer to accept (compulsory / point of view of receiver)
     did:  req.body.did? req.body.did : null,                  // did of the VC offer doc (compulsory)
     key: req.headers.apikey? req.headers.apikey: null         // apikey to get in the header...
   });
@@ -84,53 +85,7 @@ router.post("/accept", function(req, res, next) {
 // POST VC issue 
 router.post("/issue", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentusCreds.async_issueVC, {
-    id: req.body.id? req.body.id: null,                       // id of the pending offer to accept (compulsory / point of view of issuer)
-    key: req.headers.apikey? req.headers.apikey: null         // apikey to get in the header...
-  });
-});
-
-/*
- *      VC: proof
- */
-
-// GET all VC presentation requests (point of view of Issuer or of Receiver)
-router.get("/presentations", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusCreds.async_getAllVCPresentationRequests, {
-    key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
-  });
-});
-
-// GET one specific VC presentation request (point of view of Issuer or of Receiver)
-router.get("/presentation/:thid", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusCreds.async_getVCPresentationRequestByThid, {
-    thid: req.params.thid? req.params.thid: null,                    // thid of presentation req to search for (compulsory / point of view of issuer or receiver)
-    key: req.headers.apikey? req.headers.apikey: null                // apikey to get in the header...
-  });
-});
-
-// POST - create a VC presentation request (from verifier to holder)
-router.post("/presentation", function(req, res, next) {
-  routeUtils.apiPost(req, res, srvIdentusCreds.async_createVCPresentationRequest, {
-    connectionId: req.body.connectionId? req.body.connectionId: null,         // the connectionId between verifier and prover (compulsory)
-    challenge: req.body.challenge? req.body.challenge: null,                  // a text string for the prover (compulsory / point of view of verifier)
-    domain: req.body.domain? req.body.domain: null,                           // domain where this VC applies to (compulsory / point of view of verifier)
-    key: req.headers.apikey? req.headers.apikey: null         // apikey (of verifier) to get in the header...
-  });
-});
-
-// POST - accept a VC presentation request (from holder)
-router.post("/presentation/accept", function(req, res, next) {
-  routeUtils.apiPost(req, res, srvIdentusCreds.async_acceptVCPresentation, {
-    id: req.body.id? req.body.id: null,                       // the id of the presentation from holder point of view (compulsory)
-    proofId: req.body.proofId? req.body.proofId: null,        // the proof to accept by holder (compulsory)
-    key: req.headers.apikey? req.headers.apikey: null         // apikey (of verifier) to get in the header...
-  });
-});
-
-// GET final VC proof (point of view of Issuer)
-router.get("/proof/:id", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusCreds.async_getVCProof, {
-    id: req.params.id? req.params.id: null,                   // the id of the presentation from verifier point of view (compulsory)
+    recordId: req.body.recordId? req.body.recordId: null,     // id of the pending offer to accept (compulsory / point of view of issuer)
     key: req.headers.apikey? req.headers.apikey: null         // apikey to get in the header...
   });
 });
