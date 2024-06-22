@@ -27,6 +27,7 @@ M2 - NEW PLAN AFTER M1 DESIGN review
   Tasks done during this milestone [May/June 2024]
 ========================================================================================
 
+ - implemented a test Node Identus on latest release (v1.33.0)
  - built the open source framework of the Identity Agent (NodeJS app) that connects Identus to OSAIS
  - implentation of the Identity Agent:
    * APIs to manage wallet, entities and DIDs
