@@ -30,7 +30,6 @@ M3 - NEW PLAN AFTER M1 DESIGN review
  - a wallet can have several entities (one per type), and each entity has one separate authentication key + one DID
  - within OSAIS, implemented assigning a DID (caller) to any registered actor in the ecosystem + registering OSAIS itself as admin + all registered users receive a callers DID
 
-
  
  - TODO - change OSAIS to allow uploading a new model into a VAI
  - TODO - change OSAIS to allow uploading a new AI Program into a VAI
