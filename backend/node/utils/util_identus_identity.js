@@ -172,7 +172,7 @@ const async_updateAndPublishDid = async function (objFind, objUpdate) {
         ]}
 
         // now update
-        let responseDid = await srvIdentusUtils.async_simplePost("did-registrar/dids/"+objFind.did+"/updates", objParam.key, doc)
+        let responseDid = await srvIdentusUtils.async_simplePost("did-registrar/dids/"+objFind.did+"/updates", objUpdate.key, doc)
 
         return {
             data: {
@@ -198,6 +198,14 @@ const async_getDidForEntity = async function (objParam){
     }
 }
 
+const async_deleteEntityById = async function (objParam){
+    try {
+        return srvIdentusUtils.async_simpleDelete("iam/entities/"+objParam.entity, null);
+    }
+    catch(err)  {
+        throw err;
+    }
+}
 
 module.exports = {
     DID_PURPOSE_AUTH, 
@@ -209,4 +217,5 @@ module.exports = {
     async_createAndPublishDid,
     async_updateAndPublishDid,
     async_getDidForEntity,
+    async_deleteEntityById
 }

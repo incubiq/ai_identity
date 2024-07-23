@@ -106,6 +106,19 @@ const async_simplePatch = async function (_url, _key, objParam){
     }
 }
 
+const async_simpleDelete = async function (_url, _key){
+    try {
+        let _objHeader = _key==null? getAdminHeader() : getEntityHeader(_key);
+        let response = await axios.delete(getIdentusAgent()+_url, {
+            headers: _objHeader
+        });
+        return {data: response.data};
+    }
+    catch(err)  {
+        throw err;
+    }
+}
+
 module.exports = {
     DIR_ASSET_CREDS, 
     DIR_ASSET_SCHEMA,
@@ -121,5 +134,6 @@ module.exports = {
     async_simpleGet,
     async_simplePost,
     async_simplePut,
-    async_simplePatch
+    async_simplePatch,
+    async_simpleDelete
 }
