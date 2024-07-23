@@ -22,13 +22,8 @@ M3 - NEW PLAN AFTER M1 DESIGN review
 
 
 ========================================================================================
-  Tasks done during this milestone [May 2024]
+  Tasks done during this milestone [MM 2024]
 ========================================================================================
-
- - built the open source framework of the Identity NodeJS app that connects Identus to OSAIS
- - added ability to register an entity (caller, worker, provider, admin) and assign a DID + create an Identity wallet + create entity's authentication keys into Identus
- - a wallet can have several entities (one per type), and each entity has one separate authentication key + one DID
- - within OSAIS, implemented assigning a DID (caller) to any registered actor in the ecosystem + registering OSAIS itself as admin + all registered users receive a callers DID
 
  
  - TODO - change OSAIS to allow uploading a new model into a VAI
