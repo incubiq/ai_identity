@@ -87,6 +87,7 @@ const _async_createSchema = async function (objParam) {
 const async_createSchema = async function (objParam) {
     try {   
         let _doc =  await _async_createSchema(objParam);
+        _doc = JSON.stringify(_doc);
 
         // call Identus to create schema 
         return srvIdentusUtils.async_simplePost("schema-registry/schemas/"+objParam.id, objParam.key, _doc);
