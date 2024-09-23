@@ -50,7 +50,10 @@ const isDIDLongFrom = function (_did)  {
     // 3 : = long form did
     return (_did.match(/:/g) || []).length === 3;   
 }
-
+const wait = (msec) => new Promise((resolve, _) => {
+    setTimeout(resolve, msec);
+});
+  
 const async_simpleGet = async function (_url, _key){
     try {
         let _objHeader = _key==null? getAdminHeader() : getEntityHeader(_key);
@@ -129,6 +132,7 @@ module.exports = {
     getAdminHeader,
     getEntityHeader,
 
+    wait,
     getRandomSeed,
 
     async_simpleGet,
