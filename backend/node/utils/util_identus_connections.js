@@ -35,9 +35,74 @@ const async_acceptInvite = async function(objParam) {
     });
 }
 
+// creates a p2p connection beetween 2 peers        !! warning: it could create another connection even if one already exists...
+const async_createConnection = async function(objParam) {
+    try {
+
+        // create a connection (from point of view peer1)
+        let _dataInvite=await async_createInvite({
+            key: objParam.keyPeer1, 
+            from: objParam.namePeer1
+        });
+
+        // sure we are not connected? 
+        let _connectionIdForInvitee=null;
+        if(_dataInvite.data.hasOwnProperty("theirDid")) {
+            // we were connected, just OSAIS not up to date
+            // get the connection...
+            let _dataC=await async_getAllConnectionsForEntity({
+                key: objParam.keyPeer2
+            });
+            _dataC.data.forEach(item => {
+                if(item.thid===_dataInvite.data.connectionId) {
+                    _connectionIdForInvitee=item.connectionId;
+                }
+            })
+        }
+        else {
+            // peer 2 accepts the connection invite
+
+            // wait 1500ms before this call (or it may very well fail)
+            await srvIdentusUtils.wait(1500);
+
+            let _oob=_dataInvite.data.invitation.invitationUrl.replace("https://my.domain.com/path?_oob=","");
+            let _dataAccept= await async_acceptInvite({
+                key: objParam.keyPeer2,
+                invitation: _oob
+            });
+            _connectionIdForInvitee=_dataAccept.data.connectionId;
+        }
+
+        // wait 4000ms before this call (or it may very well fail)
+        await srvIdentusUtils.wait(4000);
+        let _dataFinal=await async_getConnectionById({
+            key: objParam.keyPeer1,
+            id: _dataInvite.data.connectionId
+        });
+
+        // Now we are accepted, we store it in DB (both sides)
+        return {data: {
+            from: objParam.namePeer1,
+            anonDidFrom: _dataFinal.data.myDid,            
+            connection_id_from: _dataInvite && _dataInvite.data? _dataInvite.data.connectionId: null,
+
+            to: objParam.namePeer2,
+            anonDidTo: _dataFinal.data.theirDid,            
+            connection_id_to: _connectionIdForInvitee,
+
+            thid: _dataInvite.data.thid,
+            isAccepted: _dataFinal.data.state == "ConnectionResponseSent"
+        }}
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
 module.exports = {
     async_getAllConnectionsForEntity,
     async_getConnectionById,
     async_createInvite,
     async_acceptInvite,
+    async_createConnection
 }

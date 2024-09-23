@@ -33,7 +33,7 @@ M2 - NEW PLAN AFTER M1 DESIGN review
    * APIs to manage wallet, entities and DIDs
    * added ability to register an entity (caller, worker, provider, admin) and assign a DID + create an Identity wallet + create entity's authentication keys into Identus
    * a wallet can have several entities (one per type), and each entity has one separate authentication key + one DID
-   * APIs to uploaded and register Schemas
+   * APIs to upload and register Schemas
    * APIs to create VC definitions
    * APIs to create private connections between 2 DIDs (invite, accept)
    * APIs to issue Verifiable Credentials (offer, accept, issue)
