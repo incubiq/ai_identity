@@ -36,13 +36,13 @@ const async_acceptInvite = async function(objParam) {
 }
 
 // creates a p2p connection beetween 2 peers        !! warning: it could create another connection even if one already exists...
-const async_createConnection = async function(objParam) {
+const async_createCustodialConnection = async function(objParam) {
     try {
 
         // create a connection (from point of view peer1)
         let _dataInvite=await async_createInvite({
             key: objParam.keyPeer1, 
-            from: objParam.namePeer1
+            from: objParam.namePeer1 + " for "+objParam.namePeer2
         });
 
         // wait 1500ms before this call (or it may very well fail)
@@ -89,5 +89,5 @@ module.exports = {
     async_getConnectionById,
     async_createInvite,
     async_acceptInvite,
-    async_createConnection
+    async_createCustodialConnection
 }
