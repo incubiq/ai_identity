@@ -42,8 +42,8 @@ router.post("/accept", function(req, res, next) {
 });
 
 // POST - connects both "in one call" by an admin controlling both keys (custodial) 
-router.post("/connect", function(req, res, next) {
-  routeUtils.apiPost(req, res, srvIdentus.async_createConnection, {
+router.post("/custodial/connect", function(req, res, next) {
+  routeUtils.apiPost(req, res, srvIdentus.async_createCustodialConnection, {
     keyPeer1: req.body.key_peer1? req.body.key_peer1: null,           // apikey of peer 1
     keyPeer2: req.body.key_peer2? req.body.key_peer2: null,           // apikey of peer 2
     namePeer1: req.body.name_peer1? req.body.name_peer1: null,

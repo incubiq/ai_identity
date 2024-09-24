@@ -67,7 +67,7 @@ router.get("/offers", function(req, res, next) {
 // GET a specific VC offer (point of view of Issuer or of Receiver)
 router.get("/offer/:id", function(req, res, next) {
   routeUtils.apiGet(req, res, srvIdentusCreds.async_getVCOffer, {
-    recordId: req.params.recordId? req.params.recordId: null,     // id of the pending offer to search for (compulsory)
+    recordId: req.params.id? req.params.id: null,                 // id of the pending offer to search for (compulsory)
     key: req.headers.apikey? req.headers.apikey: null             // apikey to get in the header...
   });
 });
