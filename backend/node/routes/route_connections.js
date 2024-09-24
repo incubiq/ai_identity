@@ -41,10 +41,10 @@ router.post("/accept", function(req, res, next) {
   });
 });
 
-// POST - connects both "in one call"
+// POST - connects both "in one call" by an admin controlling both keys (custodial) 
 router.post("/connect", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentus.async_createConnection, {
-    keyPeer1: req.body.key_peer1? req.body.key_peer1: null,          // apikey of peer 1
+    keyPeer1: req.body.key_peer1? req.body.key_peer1: null,           // apikey of peer 1
     keyPeer2: req.body.key_peer2? req.body.key_peer2: null,           // apikey of peer 2
     namePeer1: req.body.name_peer1? req.body.name_peer1: null,
     namePeer2: req.body.name_peer2? req.body.name_peer2: null,

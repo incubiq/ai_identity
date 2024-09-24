@@ -45,42 +45,27 @@ const async_createConnection = async function(objParam) {
             from: objParam.namePeer1
         });
 
-        // sure we are not connected? 
-        let _connectionIdForInvitee=null;
-        if(_dataInvite.data.hasOwnProperty("theirDid")) {
-            // we were connected, just OSAIS not up to date
-            // get the connection...
-            let _dataC=await async_getAllConnectionsForEntity({
-                key: objParam.keyPeer2
-            });
-            _dataC.data.forEach(item => {
-                if(item.thid===_dataInvite.data.connectionId) {
-                    _connectionIdForInvitee=item.connectionId;
-                }
-            })
-        }
-        else {
-            // peer 2 accepts the connection invite
+        // wait 1500ms before this call (or it may very well fail)
+        await srvIdentusUtils.wait(1500);
 
-            // wait 1500ms before this call (or it may very well fail)
-            await srvIdentusUtils.wait(1500);
-
-            let _oob=_dataInvite.data.invitation.invitationUrl.replace("https://my.domain.com/path?_oob=","");
-            let _dataAccept= await async_acceptInvite({
-                key: objParam.keyPeer2,
-                invitation: _oob
-            });
-            _connectionIdForInvitee=_dataAccept.data.connectionId;
-        }
+        // peer 2 accepts the connection invite
+        let _oob=_dataInvite.data.invitation.invitationUrl.replace("https://my.domain.com/path?_oob=","");
+        let _dataAccept= await async_acceptInvite({
+            key: objParam.keyPeer2,
+            invitation: _oob
+        });
+        let _connectionIdForInvitee=_dataAccept.data.connectionId;        
 
         // wait 4000ms before this call (or it may very well fail)
         await srvIdentusUtils.wait(4000);
+
+        // frompoint of view of peer1, get back the final connection and status
         let _dataFinal=await async_getConnectionById({
             key: objParam.keyPeer1,
             id: _dataInvite.data.connectionId
         });
 
-        // Now we are accepted, we store it in DB (both sides)
+        // send back important data
         return {data: {
             from: objParam.namePeer1,
             anonDidFrom: _dataFinal.data.myDid,            
