@@ -6,12 +6,23 @@
 const srvIdentusUtils = require("./util_identus_utils");
 const { consoleLog } = require("./util_services");
 
+const STATUS_HOLDER_CREDSRECEIVED="CredentialReceived";
+
 /*
  *       VC - Offer / Accept / Issue
  */
 
 const async_createVCOfferWithoutSchema = async function (objParam) {
     try {
+        // ensure claim is in JSON format 
+        if (typeof objParam.claims === "string") {
+            try {
+                objParam.claims = JSON.parse(objParam.claims);
+            } catch (error) {
+                objParam.claims={}
+            }
+        }
+        
         let dataRet = await srvIdentusUtils.async_simplePost("issue-credentials/credential-offers/", objParam.key, {
             "validityPeriod": objParam.validity,
             "schemaId": null,
@@ -23,7 +34,7 @@ const async_createVCOfferWithoutSchema = async function (objParam) {
             "issuingDID": objParam.author,
             "connectionId": objParam.connection
         });
-        consoleLog("Issuer issued a new offer (thid= "+dataRet.data.thid+ ")");
+        consoleLog("Issuer issued a new offer (thid="+dataRet.data.thid+ ")");
         return dataRet;
     }
     catch (err) {throw err}
@@ -45,7 +56,7 @@ const async_acceptVCOffer = async function (objParam) {
         let dataRet = await srvIdentusUtils.async_simplePost("issue-credentials/records/"+objParam.recordId+"/accept-offer", objParam.key, {
             subjectId: objParam.did
         })
-        consoleLog("Holder accepted creds offer (thid= "+dataRet.data.thid+ ")");
+        consoleLog("Holder accepted creds offer (thid="+dataRet.data.thid+ ")");
         return dataRet;
     }
     catch (err) {throw err}
@@ -56,16 +67,90 @@ const async_issueVC = async function (objParam) {
         let dataRet = await srvIdentusUtils.async_simplePost("issue-credentials/records/"+objParam.recordId+"/issue-credential", objParam.key, {
             // todo : put param here
         })
-        consoleLog("Issuer issued VC for offer (thid= "+dataRet.data.thid+ ")");
+        consoleLog("Issuer issued a VC (thid="+dataRet.data.thid+ ")");
         return dataRet;
     }
     catch (err) {throw err}
+}
+
+const async_getFirstHolderVCMatchingType = async function (objParam) {
+    try {
+        // all requests received from holder point of view
+        let aVCReceived = await async_getAllVCOffers({
+            key: objParam.key,
+        });
+
+        // no request? Houston we have a problem... F@@# wait time not long enough or what else?
+        if(aVCReceived.data && aVCReceived.data.length==0) {
+            let dataDID = await srvIdentusIdentity.async_getDidForEntity({
+                key: objParam.key,
+            })
+            throw({
+                data:null,
+                status: 404,
+                statusText: "No VC received so far"+(objParam.thid? " (thid="+objParam.thid+")" : " for DID "+dataDID.data[0].did)
+            })
+        }
+        // we need to check in all VC received by peer2, if one matches the claim
+        let _recId=null;
+        let _vc=null;
+        let _cVCAccepted=null;
+        let isValid=false;
+        let hasSameType=false;
+        aVCReceived.data.forEach(item => {
+
+            // filter through given status (if no status, only get those Proofs in a final state), but keep first mathing one if we have it
+            let _filterStatus = objParam.status? objParam.status : STATUS_HOLDER_CREDSRECEIVED;      
+            if(_recId==null && item.protocolState == _filterStatus) {
+                _cVCAccepted++;
+
+                // happy with the challenge requested?
+                if(item.claims && item.claims.claim_type &&  item.claims.claim_type==objParam.claim_type) {
+                    _recId=item.recordId;
+                    _vc=item;
+                    hasSameType=true;
+                }
+            }
+        })
+
+        if(!_recId) {
+            if(_cVCAccepted==0) {
+                throw({
+                    data:null,
+                    status: 404,
+                    statusText: "Holder does not hold any VC yet"
+                })    
+            }
+            if(!hasSameType) {
+                throw({
+                    data:null,
+                    status: 404,
+                    statusText: "No matching VC for this proof request (type: "+objParam.claim_type+")"
+                })    
+            }
+        }
+
+        return {data: {
+            recordId: _recId,
+            vc: _vc
+        }}
+    }
+    catch(err) {throw err}
 }
 
 // custodial full issuance (with issuer and holder actions) 
 const async_createCustodialCredential = async function (objParam) {
     try {
         // we have a custodial context, we can do all in one go
+
+        // ensure claim is in JSON format 
+        if (typeof objParam.claims === "string") {
+            try {
+              objParam.claims = JSON.parse(objParam.claims);
+            } catch (error) {
+                objParam.claims={}
+            }
+        }
 
         // create an offer
         let dataOfferByIssuer= await async_createVCOfferWithoutSchema({
@@ -143,5 +228,6 @@ module.exports = {
     async_getVCOffer,
     async_acceptVCOffer,
     async_issueVC,
+    async_getFirstHolderVCMatchingType,
     async_createCustodialCredential
 }

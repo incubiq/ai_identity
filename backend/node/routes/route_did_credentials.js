@@ -90,6 +90,14 @@ router.post("/issue", function(req, res, next) {
   });
 });
 
+// GET first VC that matches a type (point of view of Holder)
+router.get("/match/:type", function(req, res, next) {
+  routeUtils.apiGet(req, res, srvIdentusCreds.async_getFirstHolderVCMatchingType, {
+    key: req.headers.apikey? req.headers.apikey: null,             // apikey to get in the header...,
+    claim_type: req.params.type
+  });
+});
+
 // POST - will do a full offer + accept + issue vc (custodial mode)
 router.post("/issuance/custodial", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentusCreds.async_createCustodialCredential, {
