@@ -17,7 +17,25 @@ const STATUS_PROVER_PROOF_SENT="PresentationSent";
  */
 
 const async_getAllVCPresentationRequests = async function (objParam) {
-    return srvIdentusUtils.async_simpleGet("present-proof/presentations"+(objParam.thid? "?thid="+objParam.thid: ""), objParam.key);
+    try {
+        let _url="present-proof/presentations"+(objParam.thid? "?thid="+objParam.thid: "");
+        let dataRet = await srvIdentusUtils.async_simpleGet(_url, objParam.key);
+
+        // filter out with status?
+        let _aRet=[];
+        if(objParam.status) {
+            dataRet.data.forEach(item => {
+                if(item.status==objParam.status) {
+                    _aRet.push(item);
+                }
+            })
+            return {data: _aRet}
+        }
+
+        return dataRet;
+    }
+    catch(err) {throw err}
+    
 }
 
 const async_getFirstHolderPresentationRequestMatchingType = async function (objParam) {
@@ -43,6 +61,7 @@ const async_getFirstHolderPresentationRequestMatchingType = async function (objP
         let _presId=null;
         let _proof=null;
         let _claim=null;
+        let _thid=null;
         let _cVCAccepted=null;
         let isValid=false;
         let hasSameType=false;
@@ -58,6 +77,7 @@ const async_getFirstHolderPresentationRequestMatchingType = async function (objP
                 if(_options.challenge==objParam.claim_type) {
 
                     _presId=item.presentationId;
+                    _thid=item.thid;
                     hasSameType=true;
 
                     if(_filterStatus===STATUS_PROVER_PROOF_SENT) {
@@ -111,6 +131,7 @@ const async_getFirstHolderPresentationRequestMatchingType = async function (objP
 
         return {data: {
             presentationId: _presId,
+            thid: _thid,
             proof: _proof,
             claim: _claim
         }}
@@ -221,6 +242,7 @@ const async_createCustodialProof = async function (objParam) {
             data: {
                 wasPresented: true,
                 wasAccepted: true,
+                thid: dataProof.data.thid,
                 proof: dataProof.data.data[0],
                 claim: decoded_proof.vc.credentialSubject
             }

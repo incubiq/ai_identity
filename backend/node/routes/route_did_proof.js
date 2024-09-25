@@ -13,7 +13,8 @@ const srvIdentusProof = require("../utils/util_identus_proof");
 // GET all VC presentation requests (point of view of Issuer or of Holder)
 router.get("/presentations", function(req, res, next) {
   routeUtils.apiGet(req, res, srvIdentusProof.async_getAllVCPresentationRequests, {
-    thid: req.query.thid? req.query.thid: null,                   // thid in the query?
+    thid: req.query.thid && req.query.thid!="null"? req.query.thid: null,                   // thid in the query?
+    status: req.query.status? req.query.status: null,             // status in the query?
     key: req.headers.apikey? req.headers.apikey: null             // apikey to get in the header...
   });
 });
