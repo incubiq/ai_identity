@@ -58,7 +58,7 @@ After this pre-install, it should work with those commands
 
 => open a wsl terminal
 => cd open-enterprise-agent-main
-=> then go to the latest version (ex:   cd v1.28.0 )
+=> then go to the latest version (ex:   cd v1.29.1 )
 
 // to run it (on port 8100)
 => DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 PRISM_AGENT_VERSION=1.28.0 PRISM_NODE_VERSION=2.2.1 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
@@ -66,10 +66,10 @@ After this pre-install, it should work with those commands
 // to shut it down
 => docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml down 
 
-with v1.31.0
+// with v1.31.0  (last PRISM Agent)
 DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 PRISM_AGENT_VERSION=1.31.0 PRISM_NODE_VERSION=2.2.1 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
 
-// NEW IDENTUS cmd line (v1.33.0)
+// with v1.39.0 (latest Identus agent)
 DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 AGENT_VERSION=1.39.0 PRISM_NODE_VERSION=2.3.0 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
 
 // IDENTUS v1.39.1
