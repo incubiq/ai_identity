@@ -28,7 +28,8 @@ global.gConfig={
     // identus
     identus: {
         adminKey: null,
-        host: "http://localhost:8100/"
+        host: "http://localhost:8100/",
+        delay: 4250                         // F##@ Identus requires delay between some calls or will fail
     },
 
     // misc
