@@ -44,18 +44,19 @@ const async_getFirstHolderVCPresentationMatchingType = async function (objParam)
                 const type=decoded_wrapper.nonce;
 
                 // happy with the challenge requested?
-                if(type==objParam.type) {
-                    hasSameType=true;
-                    const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
-                    const decoded_proof = jwtDecode(encoded_proof);
-                    const dateExpire = new Date(decoded_proof.exp * 1000);
-                    const now = new Date();
-                    if(dateExpire> now) {
-                        isValid=true;
-                        // we have a claim 
+                const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
+                const decoded_proof = jwtDecode(encoded_proof);
+                const dateExpire = new Date(decoded_proof.exp * 1000);
+                const now = new Date();
+                if(dateExpire> now) {
+                    isValid=true;
+
+                    // we have a valid claim, but is it of same type? 
+                    if(decoded_proof.vc.credentialSubject && decoded_proof.vc.credentialSubject.claim_type==objParam.type) {
+                        hasSameType=true;
                         _bestMatch=decoded_proof.vc.credentialSubject;
                     }
-                }
+                }                
             }
         })
 
@@ -67,18 +68,18 @@ const async_getFirstHolderVCPresentationMatchingType = async function (objParam)
                     statusText: "Holder does not hold any Verifiable Credential yet"
                 })    
             }
-            if(!hasSameType) {
-                throw({
-                    data:null,
-                    status: 404,
-                    statusText: "No matching Verifiable Credential for this proof request (type: "+objParam.type+")"
-                })    
-            }
             if(!isValid) {
                 throw({
                     data:null,
                     status: 404,
                     statusText: "All proofs have expired for this proof type ("+objParam.type+")"
+                })    
+            }
+            if(!hasSameType) {
+                throw({
+                    data:null,
+                    status: 404,
+                    statusText: "No matching Verifiable Credential for this proof request (type: "+objParam.type+")"
                 })    
             }
         }
