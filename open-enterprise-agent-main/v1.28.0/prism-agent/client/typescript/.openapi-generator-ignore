@@ -1,6 +1,0 @@
-package.json
-docs
-
-# ignore broken files
-models/Service.ts
-models/UpdateManagedDIDServiceAction.ts
