@@ -143,18 +143,6 @@ const async_createCustodialCredential = async function (objParam) {
     try {
         // we have a custodial context, we can do all in one go
 
-        // look if we have a similar valid creds (do not issue a new exact same one if a valid creds exist)
-        let dataExist=null;
-        try {
-            dataExist= await async_getFirstHolderVCMatchingType({
-                key: objParam.keyPeer2,
-                claim_type: objParam.claim_type
-            });
-            return dataExist;
-        }
-        catch(err) {}
-
-
         // ensure claim is in JSON format 
         if (typeof objParam.claims === "string") {
             try {
@@ -162,6 +150,19 @@ const async_createCustodialCredential = async function (objParam) {
             } catch (error) {
                 objParam.claims={}
             }
+        }
+
+        // look if we have a similar valid creds (do not issue a new exact same one if a valid creds exist)
+        let dataExist=null;
+        if(objParam.claims && objParam.claims.claim_type) {
+            try {
+                dataExist= await async_getFirstHolderVCMatchingType({
+                    key: objParam.keyPeer2,
+                    claim_type: objParam.claims.claim_type
+                });
+                return dataExist;
+            }
+            catch(err) {}
         }
 
         // create an offer

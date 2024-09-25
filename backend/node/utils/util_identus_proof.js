@@ -217,7 +217,6 @@ const async_createCustodialProof = async function (objParam) {
         const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
         const decoded_proof = jwtDecode(encoded_proof);
         delete decoded_proof.vc.credentialSubject.id;
-
         return {
             data: {
                 wasPresented: true,
