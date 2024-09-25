@@ -23,7 +23,7 @@ global.gConfig={
   
     prod:"https://identity.opensourceais.com/",
     debug: "http://localhost:"+_port+"/", 
-    tunnel: null,                           // the tunnel (use only for debug)
+    tunnel: null,                           // our identity node tunnel (use only for debug - eg: used for registering schemas )
 
     // identus
     identus: {

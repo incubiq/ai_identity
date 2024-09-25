@@ -139,8 +139,6 @@ F/ settlement (end of month)
     * identity open source APIs to issue wallets (to AI, to Caller, to service provider)
     * identity open source APIs to issue DID (to AI, to Caller, to service provider)
     * identity open source APIs to issue VC (to AI, Caller, service provider)
-    * OSAIS to decompose an AI's attribute to resurface service providers (of GPU, of models, etc...) [this part is not open source, as part of OSAIS internals]
-    * OSAIS to display in UI the status of an AI from its VCs (identity, performance, cost) [I will likely make all open source until getting a JSON, then the UI may be private, to be reviewed]
     => we will implement more than initially planned: (i) not just identity/VC for AI, but for its callers and its service providers ; (ii) splitting AI into service provider components
 
  - M3 initial plan:
@@ -151,6 +149,8 @@ F/ settlement (end of month)
  - M3 new plan:
     * the onchain representation of the AI is now its Identus identity wallet + VCs (not an NFT)
     * identity open source to verify VCs 
+    * OSAIS to decompose an AI's attribute to resurface service providers (of GPU, of models, etc...) [this part is not open source, as part of OSAIS internals]
+    * OSAIS to display in UI the status of an AI from its VCs (identity, performance, cost) [I will likely make all open source until getting a JSON, then the UI may be private, to be reviewed]
     * OSAIS to make use of the identity open source APIs to execute an AI's transaction and generate VCs
     * OSAIS to verify payment claims and make end of month settlements between all parties  
     => we will implement differently from initially planned: (i) no smart contract for running each transaction, but a private orchestrator for cost settlements at end of each month ; (ii) no need for an NFT

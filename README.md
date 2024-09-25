@@ -12,6 +12,14 @@
  - video report: https://youtu.be/u_ufSn_7UR8 
  - project specs: https://github.com/incubiq/ai_identity/blob/main/specs.txt
 
+ 2/ (June):
+ - video report: https://youtu.be/tG_X_iB81TQ 
+ - Identity Node repo updated and functional (wallet creation, entity creation, DID, shemas, definitions, VC offers, Presentation requests, Proof of Claims...) 
+
+ 3/ (planned for Oct)
+
+ 4/ (planned for Dec)
+
 
 # Identus test scripts
  - up to date in repo
