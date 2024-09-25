@@ -31,7 +31,7 @@ I ran into some issues with DidComm not working with a first setup, then recreat
 9. sudo usermod -aG docker $USER
 10. newgrp docker 
 11. docker run hello-world
-12. install locally a Identy Agent (such as v 1.28.0): https://github.com/hyperledger/identus/releases/tag/prism-agent-v1.28.0  
+12. install locally a Identity Agent (such as v 1.28.0): https://github.com/hyperledger/identus/releases/tag/prism-agent-v1.28.0  
 
 (other requirements for scala - necessary?)
  - install java jdk:  sudo apt-get install openjdk-8-jre
@@ -61,11 +61,23 @@ After this pre-install, it should work with those commands
 with v1.31.0
 DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 PRISM_AGENT_VERSION=1.31.0 PRISM_NODE_VERSION=2.2.1 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
 
-// NEW IDENTUS cmd line
-DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 AGENT_VERSION=1.33.0 PRISM_NODE_VERSION=2.3.0 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
+// NEW IDENTUS cmd line (v1.33.0)
+DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 AGENT_VERSION=1.39.0 PRISM_NODE_VERSION=2.3.0 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
+
+// IDENTUS v1.39.1
+DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100  PRISM_NODE_VERSION=2.3.0 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
+
+// to tunnel the local Identity Cloud
+cloudflared tunnel --url http://localhost:8100
 
 // to inspect
 => docker logs issuer-prism-agent-1
+ docker volume rm issuer_pg_data_db
+ docker volume prune
+ 
+// to clear the DB and restart from scratch 
+(after a compose down)
+
 
 // to check for health
 => wsl
