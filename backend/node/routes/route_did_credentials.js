@@ -48,7 +48,7 @@ router.post("/offer-noschema", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentusCreds.async_createVCOfferWithoutSchema, {
     connection:  req.body.connection? req.body.connection : null,   // didComm connection_id for exchanging request (offer/accept)
     author:  req.body.author? req.body.author : null,               // published short DID of author for this offer
-    validity:  req.body.validity? req.body.validity : 3600,         // offer valid for x seconds (1h by defalut)
+    validity:  req.body.validity? req.body.validity : gConfig.identus.validity,         // offer valid for x seconds (30 days by defalut)
 //    definition:  req.body.definition? req.body.definition : null,   // id of the definition VC 
 //    location:  req.body.location? req.body.location : null,         // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
     claims:  req.body.claims? req.body.claims : {},                 // the claims to be issued in the VC (no idea why they are here, they are already in the definition)
@@ -106,7 +106,7 @@ router.post("/issuance/custodial", function(req, res, next) {
     keyPeer2: req.body.key_peer2? req.body.key_peer2: null,           // apikey of peer 2 (holder)
     didPeer1:  req.body.did_peer1? req.body.did_peer1 : null,         // published short DID of issuer
     didPeer2:  req.body.did_peer2? req.body.did_peer2 : null,         // published short DID of holder
-    validity:  req.body.validity? req.body.validity : 3600,           // offer valid for x seconds (1h by defalut)
+    validity:  req.body.validity? req.body.validity : gConfig.identus.validity,           // offer valid for x seconds (30d by defalut)
     claims:  req.body.claims? req.body.claims : {},                  // the claims to be issued in the VC
   });
 });
