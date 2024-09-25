@@ -18,11 +18,12 @@ router.get("/presentations", function(req, res, next) {
   });
 });
 
-// GET first VC presentation that matches a type (point of view of Holder)
+// GET first presentation request (or proof) that matches a type (point of view of Holder)
 router.get("/presentation/match/:type", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusProof.async_getFirstHolderVCPresentationMatchingType, {
+  routeUtils.apiGet(req, res, srvIdentusProof.async_getFirstHolderPresentationRequestMatchingType, {
     key: req.headers.apikey? req.headers.apikey: null,             // apikey to get in the header...,
-    claim_type: req.params.type
+    claim_type: req.params.type,
+    status: req.query.status? req.query.status: null               // keep null to get proofs, or pass a status (e.g. RequestReceived) to get those pending requests
   });
 });
 
@@ -30,8 +31,8 @@ router.get("/presentation/match/:type", function(req, res, next) {
 router.post("/presentation", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentusProof.async_createVCPresentationRequest, {
     connection: req.body.connection? req.body.connection: null,               // the connectionId between verifier and prover (compulsory)
-    proofs: req.body.proofs? req.body.proofs: [],                             // all proof properties the verifier is asking
-    challenge: req.body.challenge? req.body.challenge: null,                  // a text string for the prover (compulsory / point of view of verifier)
+//    proofs: req.body.proofs? req.body.proofs: [],                             // all proof properties the verifier is asking
+    challenge: req.body.challenge? req.body.challenge: null,                  // text : claim_type that verifier wants to ask for (holder will have to provide a record creds of same claim_type)
     domain: req.body.domain? req.body.domain: null,                           // domain where this VC applies to (compulsory / point of view of verifier)
     key: req.headers.apikey? req.headers.apikey: null         // apikey (of verifier) to get in the header...
   });
@@ -47,11 +48,11 @@ router.post("/presentation/accept", function(req, res, next) {
 });
 
 // GET final VC proof (point of view of Issuer)
-router.get("/presentation/:id", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusProof.async_getVCProof, {
+router.patch("/presentation/:id", function(req, res, next) {
+  routeUtils.apiPatch(req, res, srvIdentusProof.async_issueVCProof, {
     presentationId: req.params.id? req.params.id: null,                   // the id of the presentation from verifier point of view (compulsory)
     key: req.headers.apikey? req.headers.apikey: null         // apikey to get in the header...
-  });
+  }, {});
 });
 
 // POST - will do a full request + accept + issue proof (custodial mode)
