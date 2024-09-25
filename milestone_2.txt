@@ -27,27 +27,27 @@ M2 - NEW PLAN AFTER M1 DESIGN review
   Tasks done during this milestone [May/June 2024]
 ========================================================================================
 
+ - implemented a test Node Identus on latest release (v1.33.0)
  - built the open source framework of the Identity Agent (NodeJS app) that connects Identus to OSAIS
  - implentation of the Identity Agent:
    * APIs to manage wallet, entities and DIDs
    * added ability to register an entity (caller, worker, provider, admin) and assign a DID + create an Identity wallet + create entity's authentication keys into Identus
    * a wallet can have several entities (one per type), and each entity has one separate authentication key + one DID
-   * APIs to uploaded and register Schemas
+   * APIs to upload and register Schemas
    * APIs to create VC definitions
-   * APIs to create private connections between 2 DIDs
-   * APIs to issue Verifiable Credentials
+   * APIs to create private connections between 2 DIDs (invite, accept)
+   * APIs to issue Verifiable Credentials (offer, accept, issue)
+   * APIs to request presentation of Proof of Claims (request, accept, provide claim)
+
  - within OSAIS:
    * implemented assigning a DID (caller) to any registered actor in the ecosystem
    * registering OSAIS itself as admin 
    * all registered users receive a Caller DID
    * all registered Virtual AIs receive a Caller DID and a Worker DID
    * some basic AI DID-schemas are created at startup (in the Identity agent and in Identus)
+   * AIs receive a Identity Credential at creation 
+   * OSAIS can request AIs to show proof of Identity, and receive a VC proof with identity claims inside 
  
 
- - TODO - change OSAIS to allow uploading a new model into a VAI
- - TODO - change OSAIS to allow uploading a new AI Program into a VAI
- - TODO - change OSAIS to allow uploading a new config file into a VAI
- - TODO - with all those changes, a VAI becomes now a AI wrapper host running on a GPU => it is now a GPU service provider
- - TODO - a AI Prog is also a service provider (program version, etc...) so that it can also receive DID + VCs
- 
+
  - ??? Produced video report ???

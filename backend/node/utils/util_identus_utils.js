@@ -50,6 +50,77 @@ const isDIDLongFrom = function (_did)  {
     // 3 : = long form did
     return (_did.match(/:/g) || []).length === 3;   
 }
+const wait = (msec) => new Promise((resolve, _) => {
+    setTimeout(resolve, msec);
+});
+  
+const async_simpleGet = async function (_url, _key){
+    try {
+        let _objHeader = _key==null? getAdminHeader() : getEntityHeader(_key);
+        let response = await axios.get(getIdentusAgent()+_url, {
+            headers: _objHeader
+        });
+
+        // if we have contents, we return it, overwise straight data
+        let _data = response.data.contents? response.data.contents : response.data;
+        return {data: _data};
+    }
+    catch(err)  {
+        throw err;
+    }
+}
+
+const async_simplePost = async function (_url, _key, objParam){
+    try {
+        let _objHeader = _key==null? getAdminHeader() : getEntityHeader(_key);
+        let response = await axios.post(getIdentusAgent()+_url, objParam, {
+            headers: _objHeader
+        });
+        return {data: response.data};    
+    }
+    catch(err)  {
+        throw err;
+    }
+}
+
+const async_simplePut = async function (_url, _key, objParam){
+    try {
+        let _objHeader = _key==null? getAdminHeader() : getEntityHeader(_key);
+        let response = await axios.put(getIdentusAgent()+_url, objParam, {
+            headers: _objHeader
+        });
+        return {data: response.data};    
+    }
+    catch(err)  {
+        throw err;
+    }
+}
+
+const async_simplePatch = async function (_url, _key, objParam){
+    try {
+        let _objHeader = _key==null? getAdminHeader() : getEntityHeader(_key);
+        let response = await axios.patch(getIdentusAgent()+_url, objParam, {
+            headers: _objHeader
+        });
+        return {data: response.data};    
+    }
+    catch(err)  {
+        throw err;
+    }
+}
+
+const async_simpleDelete = async function (_url, _key){
+    try {
+        let _objHeader = _key==null? getAdminHeader() : getEntityHeader(_key);
+        let response = await axios.delete(getIdentusAgent()+_url, {
+            headers: _objHeader
+        });
+        return {data: response.data};
+    }
+    catch(err)  {
+        throw err;
+    }
+}
 
 module.exports = {
     DIR_ASSET_CREDS, 
@@ -61,5 +132,12 @@ module.exports = {
     getAdminHeader,
     getEntityHeader,
 
+    wait,
     getRandomSeed,
+
+    async_simpleGet,
+    async_simplePost,
+    async_simplePut,
+    async_simplePatch,
+    async_simpleDelete
 }

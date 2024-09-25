@@ -162,6 +162,7 @@ const srvUtil = require("./utils/util_services");
         const routeIdentity = require('./routes/route_did_identity');
         const routeSchema = require('./routes/route_did_schema');
         const routeCredentials = require('./routes/route_did_credentials');
+        const routeProof = require('./routes/route_did_proof');
         const routePublicAPI = require('./routes/route_public');
         const routePrivateAdminAPI = require('./routes/route_private_admin');
 
@@ -177,6 +178,7 @@ const srvUtil = require("./utils/util_services");
         app.use('/api/v1/identity', routeIdentity);
         app.use('/api/v1/schema', routeSchema);
         app.use('/api/v1/vc', routeCredentials);
+        app.use('/api/v1/proof', routeProof);
 
         // public API route
         app.use('/api/v1/public', routePublicAPI);
