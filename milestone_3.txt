@@ -25,12 +25,26 @@ M3 - NEW PLAN AFTER M1 DESIGN review
   Tasks done during this milestone [MM 2024]
 ========================================================================================
 
- 
- - TODO - change OSAIS to allow uploading a new model into a VAI
- - TODO - change OSAIS to allow uploading a new AI Program into a VAI
- - TODO - change OSAIS to allow uploading a new config file into a VAI
- - TODO - with all those changes, a VAI becomes now a AI wrapper host running on a GPU => it is now a GPU service provider
- - TODO - a AI Prog is also a service provider (program version, etc...) so that it can also receive DID + VCs
- - TODO - issue a DID to the VAI
+ - improved Identity node API to deal with most cases (end to end)
+ - added APIs to simplify calls in case of full custodial solution
+ - delivered a full POSTMAN test library covering all cases
+ - produced a full documentation of APIs
+ - produced video report
 
- - ??? Produced video report ???
+========================================================================================
+  Identus Design inconsistencies
+========================================================================================
+
+ - POST /issue-credentials/credential-offers
+    * validityPeriod is the validity for the future Creds, whereas here, we "only" create a an offer for later creating a Creds. 
+    * there is NO validityPeriod for the offer, meaning the offer is valid seemingly for ever. 
+    * validityPeriod  should more likely have been the validity period of the offer (not of the future Creds)
+
+ - General: hyper complication of API / inconsistency:  
+    - (Creds Issuance) goalCode and goal do not seem to be included later in the Creds, and cannot either be retrived in the proof. Why is it here?
+    - the offer has a "protocolState", whereas a Proof has a "state" ; both supposed to have same meaning, why two different concepts?
+    - (Proof Issuance) whereas Creds offers have "createdAt" field, presentation proof do not have any (why, it would have been great)
+    - (Proof) a Creds has a validityPeriod, but the Proof does not have any. It makes a proof still valid despite the Creds inside flagged as expired
+    - the exp (expire) date inside the Proof creds is always the same (does not reflect the param validityPeriod)
+
+
