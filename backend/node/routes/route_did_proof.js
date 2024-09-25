@@ -22,7 +22,7 @@ router.get("/presentations", function(req, res, next) {
 router.get("/presentation/match/:type", function(req, res, next) {
   routeUtils.apiGet(req, res, srvIdentusProof.async_getFirstHolderVCPresentationMatchingType, {
     key: req.headers.apikey? req.headers.apikey: null,             // apikey to get in the header...,
-    type: req.params.type
+    claim_type: req.params.type
   });
 });
 
@@ -56,12 +56,12 @@ router.get("/presentation/:id", function(req, res, next) {
 
 // POST - will do a full request + accept + issue proof (custodial mode)
 router.post("/presentation/custodial", function(req, res, next) {
-  routeUtils.apiPost(req, res, srvIdentusProof.async_getCustodialProof, {
+  routeUtils.apiPost(req, res, srvIdentusProof.async_createCustodialProof, {
     connection: req.body.connection? req.body.connection: null,       // the connectionId between verifier and prover (compulsory)
     keyPeer1: req.body.key_peer1? req.body.key_peer1: null,           // apikey of peer 1 (verifier)
     keyPeer2: req.body.key_peer2? req.body.key_peer2: null,           // apikey of peer 2 (prover)
 //    proofs: req.body.proofs? req.body.proofs: "",                     // comma separated list of all proof properties the verifier is asking
-    type:  req.body.type? req.body.type: null,                        // the type that the VC must contain for a match
+    claim_type:  req.body.claim_type? req.body.claim_type: null,        // the type that the VC must contain for a match (eg : "identity")
     challenge: req.body.challenge? req.body.challenge: null,          // a text string for the prover (will display the type of request - usused??)
     domain: req.body.domain? req.body.domain: null,                   // domain where this VC applies to (compulsory / point of view of verifier - unused??)
   });

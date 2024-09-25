@@ -90,4 +90,18 @@ router.post("/issue", function(req, res, next) {
   });
 });
 
+// POST - will do a full offer + accept + issue vc (custodial mode)
+router.post("/issuance/custodial", function(req, res, next) {
+  routeUtils.apiPost(req, res, srvIdentusCreds.async_createCustodialCredential, {
+    connection: req.body.connection? req.body.connection: null,       // the connectionId between issuer and holder (compulsory)
+    keyPeer1: req.body.key_peer1? req.body.key_peer1: null,           // apikey of peer 1 (issuer)
+    keyPeer2: req.body.key_peer2? req.body.key_peer2: null,           // apikey of peer 2 (holder)
+    didPeer1:  req.body.did_peer1? req.body.did_peer1 : null,         // published short DID of issuer
+    didPeer2:  req.body.did_peer2? req.body.did_peer2 : null,         // published short DID of holder
+    validity:  req.body.validity? req.body.validity : 3600,           // offer valid for x seconds (1h by defalut)
+    claims:  req.body.claims? req.body.claims : {},                  // the claims to be issued in the VC
+  });
+});
+
+
 module.exports = router;
