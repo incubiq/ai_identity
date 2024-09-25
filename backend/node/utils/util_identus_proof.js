@@ -42,6 +42,7 @@ const async_getFirstHolderPresentationRequestMatchingType = async function (objP
         // we need to check in all VC received by peer2, if one matches the proof request
         let _presId=null;
         let _proof=null;
+        let _claim=null;
         let _cVCAccepted=null;
         let isValid=false;
         let hasSameType=false;
@@ -60,20 +61,22 @@ const async_getFirstHolderPresentationRequestMatchingType = async function (objP
                     hasSameType=true;
 
                     if(_filterStatus===STATUS_PROVER_PROOF_SENT) {
+                        _proof=item.data[0];
                         const decoded_wrapper = jwtDecode(item.data[0]);
                         const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
                         const decoded_proof = jwtDecode(encoded_proof);
                         const dateExpire = new Date(decoded_proof.exp * 1000);
                         const now = new Date();
-                        if(dateExpire> now) {
+//                        if(dateExpire> now) {              SHIT Identus expiry date does not work, so we cannot compare...
     
                             // now this must be the one 
                             if(decoded_proof.vc.credentialSubject && decoded_proof.vc.credentialSubject.claim_type==objParam.claim_type) {
                                 isValid=true;
-                                _proof=decoded_proof.vc.credentialSubject;
+                                delete decoded_proof.vc.credentialSubject.id;
+                                _claim=decoded_proof.vc.credentialSubject;
                                 return;
                             }
-                        }
+//                        }
 
                         // it s not good in the end...
                         _presId=null;
@@ -108,7 +111,8 @@ const async_getFirstHolderPresentationRequestMatchingType = async function (objP
 
         return {data: {
             presentationId: _presId,
-            proof: _proof
+            proof: _proof,
+            claim: _claim
         }}
     }
     catch(err) {throw err}
@@ -121,7 +125,6 @@ const async_createVCPresentationRequest = async function (objParam) {
             connectionId: objParam.connection,
             proofs: objParam.proofs? objParam.proofs: [],
             options:{
-                claim_type: objParam.claim_type,
                 challenge: objParam.challenge,
                 domain: objParam.domain
             },
@@ -164,6 +167,18 @@ const async_issueVCProof = async function (objParam) {
 const async_createCustodialProof = async function (objParam) {
     // we have a custodial context, we can do all in one go
     try {
+        // if the proof already exists, we take it
+        let dataExist=null;
+        try {
+            dataExist= await async_getFirstHolderPresentationRequestMatchingType({
+                key: objParam.keyPeer2,
+                claim_type: objParam.claim_type,
+            })
+            return dataExist;
+        }
+        catch(err) {}
+
+        // we don t have any existing one.. so we request it
         let dataPresReqAsVerifier = await async_createVCPresentationRequest({
             key: objParam.keyPeer1,
             connection: objParam.connection,
@@ -193,16 +208,22 @@ const async_createCustodialProof = async function (objParam) {
         // F@@# Identus will fail if called within less than 4, 5, or 6 secs after this call... oh my... we slow it down
         await srvIdentusUtils.wait(gConfig.identus.delay);
 
-        let dataProof= await async_getVCProof({
+        let dataProof= await async_issueVCProof({
             key: objParam.keyPeer1,
             presentationId: dataPresReqAsVerifier.data.presentationId,
         });
+
+        const decoded_wrapper = jwtDecode(dataProof.data.data[0]);
+        const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
+        const decoded_proof = jwtDecode(encoded_proof);
+        delete decoded_proof.vc.credentialSubject.id;
 
         return {
             data: {
                 wasPresented: true,
                 wasAccepted: true,
-                proof: dataProof.data.data[0]
+                proof: dataProof.data.data[0],
+                claim: decoded_proof.vc.credentialSubject
             }
         }
     }

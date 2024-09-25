@@ -63,7 +63,6 @@ router.post("/presentation/custodial", function(req, res, next) {
     keyPeer2: req.body.key_peer2? req.body.key_peer2: null,           // apikey of peer 2 (prover)
 //    proofs: req.body.proofs? req.body.proofs: "",                     // comma separated list of all proof properties the verifier is asking
     claim_type:  req.body.claim_type? req.body.claim_type: null,        // the type that the VC must contain for a match (eg : "identity")
-    challenge: req.body.challenge? req.body.challenge: null,          // a text string for the prover (will display the type of request - usused??)
     domain: req.body.domain? req.body.domain: null,                   // domain where this VC applies to (compulsory / point of view of verifier - unused??)
   });
 });
