@@ -29,7 +29,8 @@ global.gConfig={
     identus: {
         adminKey: null,
         host: "http://localhost:8100/",
-        delay: 4250                         // F##@ Identus requires delay between some calls or will fail
+        delay: 4250,                        // F##@ Identus requires delay between some calls or will fail
+        validity: 3600 * 24 *30             // default validity of Creds issued set to one month
     },
 
     // misc
