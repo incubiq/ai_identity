@@ -107,7 +107,8 @@ router.post("/issuance/custodial", function(req, res, next) {
     didPeer1:  req.body.did_peer1? req.body.did_peer1 : null,         // published short DID of issuer
     didPeer2:  req.body.did_peer2? req.body.did_peer2 : null,         // published short DID of holder
     validity:  req.body.validity? req.body.validity : gConfig.identus.validity,           // offer valid for x seconds (30d by defalut)
-    claims:  req.body.claims? req.body.claims : {},                  // the claims to be issued in the VC
+    claims:  req.body.claims? req.body.claims : {},                   // the claims to be issued in the VC
+    noDuplicate: req.body.noDuplicate!=null ? !(req.body.noDuplicate==false || req.body.noDuplicate=="false") : true,   // no duplicate of issuance of same type
   });
 });
 

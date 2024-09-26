@@ -154,7 +154,7 @@ const async_createCustodialCredential = async function (objParam) {
 
         // look if we have a similar valid creds (do not issue a new exact same one if a valid creds exist)
         let dataExist=null;
-        if(objParam.claims && objParam.claims.claim_type) {
+        if(objParam.noDuplicate && objParam.claims && objParam.claims.claim_type) {
             try {
                 dataExist= await async_getFirstHolderVCMatchingType({
                     key: objParam.keyPeer2,
