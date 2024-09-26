@@ -65,6 +65,8 @@ router.post("/presentation/custodial", function(req, res, next) {
 //    proofs: req.body.proofs? req.body.proofs: "",                     // comma separated list of all proof properties the verifier is asking
     claim_type:  req.body.claim_type? req.body.claim_type: null,        // the type that the VC must contain for a match (eg : "identity")
     domain: req.body.domain? req.body.domain: null,                   // domain where this VC applies to (compulsory / point of view of verifier - unused??)
+    noDuplicate: req.body.noDuplicate!=null? !(req.body.noDuplicate==false || req.body.noDuplicate=="false") : true,   // no duplicate of issuance of same type
+    thid: req.body.thid? req.body.thid: null                          // to force the use of a specific credential in the proof (otherwise, first available is taken)
   });
 });
 

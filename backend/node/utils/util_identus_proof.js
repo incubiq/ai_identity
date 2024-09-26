@@ -190,14 +190,16 @@ const async_createCustodialProof = async function (objParam) {
     try {
         // if the proof already exists, we take it
         let dataExist=null;
-        try {
-            dataExist= await async_getFirstHolderPresentationRequestMatchingType({
-                key: objParam.keyPeer2,
-                claim_type: objParam.claim_type,
-            })
-            return dataExist;
+        if(objParam.noDuplicate) {
+            try {            
+                dataExist= await async_getFirstHolderPresentationRequestMatchingType({
+                    key: objParam.keyPeer2,
+                    claim_type: objParam.claim_type,
+                })
+                return dataExist;
+            }
+            catch(err) {}
         }
-        catch(err) {}
 
         // we don t have any existing one.. so we request it
         let dataPresReqAsVerifier = await async_createVCPresentationRequest({
@@ -215,18 +217,37 @@ const async_createCustodialProof = async function (objParam) {
             thid: dataPresReqAsVerifier.data.thid
         })
 
-        let dataBestMatchRecord = await srvIdentusCreds.async_getFirstHolderVCMatchingType({
-            key: objParam.keyPeer2,
-            claim_type: objParam.claim_type
-        })
+        let objBestMatchRecord=null;
+        
+        // force selection of a specific creds?
+        if (objParam.thid) {
+            let _a = await srvIdentusCreds.async_getAllVCOffers({
+                key: objParam.keyPeer2,
+                thid: objParam.thid,
+            })
+            if (_a && _a.data && _a.data.length==1) {
+                objBestMatchRecord=_a.data[0];
+            }
+        }
+
+        // no creds found or forced? select best match
+        if(!objBestMatchRecord) {
+            let dataBestMatchRecord = await srvIdentusCreds.async_getFirstHolderVCMatchingType({
+                key: objParam.keyPeer2,
+                claim_type: objParam.claim_type
+            })  
+            objBestMatchRecord=dataBestMatchRecord.data;
+        }
 
         let dataAccept = await async_acceptVCPresentation({
             key: objParam.keyPeer2,
             presentationId: dataPresReqAsHolder.data[0].presentationId,
-            recordId: dataBestMatchRecord.data.recordId
+            recordId: objBestMatchRecord.recordId
         });
 
         // F@@# Identus will fail if called within less than 4, 5, or 6 secs after this call... oh my... we slow it down
+        // !!! double wait for the Proof issuance (or it fails too often)
+        await srvIdentusUtils.wait(gConfig.identus.delay);
         await srvIdentusUtils.wait(gConfig.identus.delay);
 
         let dataProof= await async_issueVCProof({

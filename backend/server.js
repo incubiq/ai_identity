@@ -53,6 +53,10 @@ _setParams = function(_config) {
     console.log("IDENTUS HOST WAS SET TO "+_config.IDENTUS_HOST);
     if(_config.TUNNEL) {gConfig.tunnel=_config.TUNNEL;}
     console.log("TUNNEL WAS SET TO "+_config.TUNNEL);
+    if(_config.IDENTUS_DELAY) {gConfig.identus.delay=_config.IDENTUS_DELAY;}
+    console.log("IDENTUS DELAY WAS SET TO "+gConfig.identus.delay);
+    if(_config.IDENTUS_DEFAULT_VALIDITY) {gConfig.identus.validity=_config.IDENTUS_DEFAULT_VALIDITY;}
+    console.log("IDENTUS DEFAULT VALIDITY WAS SET TO "+ gConfig.identus.validity);
 
     if(_config.EXTRA) {
         return _config.EXTRA;
