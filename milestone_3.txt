@@ -46,7 +46,7 @@ M3 - NEW PLAN AFTER M1 DESIGN review
  [critical]
   - calling APIs successively (like in a Custodial mode, to create a VC or create a Proof) always fails. I have to slow doen the app (around 4sec per call, and even more for the Proof) to get it working. Since VCs and Proofs are not onchain but in a Identus DB, there seems to be no good reason for this dreadful performance. In addition, the doc does not mention this, and if indeed the expectation after a call is that the object "Does not yet exists", then why does the API return the object?
   - no ability to apply a filter on API calls with query of multiple content. (e.g. GET issue-credentials/records) - this is an automatically paginated (100) call which makes its use not optimal.
-    => need a filter by date ; by status/protocolStatus ; 
+    => need a filter by date range ; by status/protocolStatus ; by did... (e.g. all issued proofs to XYZ in the last 10 days)
 
  [important]
 
@@ -57,10 +57,11 @@ M3 - NEW PLAN AFTER M1 DESIGN review
     * the exp (expire) date inside the Proof creds is always the same (does not reflect the param validityPeriod)
 
   - General: hyper complication of API / inconsistency:  
-    - (Creds Issuance) goalCode and goal do not seem to be included later in the Creds, and cannot either be retrived in the proof. Why is it here?
     - the offer has a "protocolState", whereas a Proof has a "state" ; both supposed to have same meaning, why two different concepts?
     - (Proof Issuance) whereas Creds offers have "createdAt" field, presentation proof do not have any (why, it would have been great)
     - (Proof) a Creds has a validityPeriod, but the Proof does not have any. It makes a proof still valid despite the Creds inside flagged as expired
+    - Nonce is not a nonce. The challenge passed to create as credential becomes a nonce in the Credential, but it is not a nonce (a random number generated for a unique use) since it cannot be controlled by Identus. Why call it nonce since it is the challenge? Call it challenge. If you need a nonce, make one separately.
+    - (Creds Issuance) goalCode and goal do not seem to be included later in the Creds, and cannot either be retrived in the proof. Why is it here? I find it confusing between goal, goalcode, challenge: concepts that seem external to Identus but still expected as input, either processed (badly as the challenge) or not (as goal)
     
   
 
