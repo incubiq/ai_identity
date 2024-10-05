@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const srvIdentus = require("./utils/util_identus_identity");
 const srvUtil = require("./utils/util_services");
+const srvIdentusUtil = require("./utils/util_identus_utils");
 /*
  *      App Inits
  */
@@ -186,19 +187,21 @@ const srvUtil = require("./utils/util_services");
         app.use('/api/v1/public', routePublicAPI);
 
         // Admin API route
+//        app.use('/api/v1/private/admin', routePrivateAdminAPI);
         
-        // todo
-        /*
-        app.use('/api/v1/private/admin',
-            fnNoRedirect,
-            passportJwt.authenticate('jwt', {
-                session: false,
-                failureRedirect: '/api/v1/public/unauthorized_api'
-            }),
-            JWT_Utils.isAdminJWT, 
+        app.use('/api/v1/admin',
+            (req, res, next) => {
+                if (req.headers['x-admin-api-key'] === srvIdentusUtil.getIdentusAdminKey()) {
+                    return next();
+                }
+                return res.status(401).json({ 
+                    data: null,
+                    status: 401,
+                    statusText: "Unauthorized" 
+                });
+            },
             routePrivateAdminAPI
         );
-        */
     
         //  API failure
         app.use('/api/v1',  function (req, res, next) {
