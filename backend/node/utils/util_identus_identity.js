@@ -16,11 +16,35 @@ const DID_PURPOSE_ISSUANCE = "issue"
  */
 
 const async_getEntities = async function (){
-    return srvIdentusUtils.async_simpleGet("iam/entities/", null);
+    try {
+        let resp = await srvIdentusUtils.async_simpleGet("iam/entities/", null);
+        if(resp.data) {
+            return {
+                data: resp.data
+            }
+        }
+    }
+    catch(err)  {
+        throw err;
+    }
 }
 
 const async_getEntityById = async function (objEntity){
-    return srvIdentusUtils.async_simpleGet("iam/entities/"+objEntity.entity, null);
+    try {
+        let resp = await srvIdentusUtils.async_simpleGet("iam/entities/"+objEntity.entity, null);
+        if(resp.data) {
+            return {
+                data: resp.data
+            }
+        }
+    }
+    catch(err)  {
+        throw {
+            data: null,
+            status: 404,
+            statusText: "Not found"
+        };
+    }
 }
 
 const async_findOrCreateIdentityWallet = async function (objParam){

@@ -8,38 +8,6 @@ const srvIdentusCreds = require("../utils/util_identus_credentials");
 // all routes here start with               api/v1/vc/
 
 /*
- *      VC defintions
- */
-
-// GET all definitions
-router.get("/definitions", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusDef.async_getAllVCDefinitions, {
-    key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
-  });
-});
-
-// GET a definition (by guid)
-router.get("/definition/:guid", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusDef.async_getVCDefinition, {
-    guid: req.params.guid? req.params.guid: null,                    // guid of definition to search for (compulsory)
-    key: req.headers.apikey? req.headers.apikey: null                // apikey to get in the header...
-  });
-});
-
-// POST VC definition
-router.post("/definition", function(req, res, next) {
-  routeUtils.apiPost(req, res, srvIdentusDef.async_createVCDefinition, {
-    name:  req.body.name? req.body.name : null,             // name for this definition (compulsory)
-    version: req.body.version? req.body.version : "1.0.0",  // version for this definition (optional)
-    description:  req.body.description? req.body.description : null,     // description for this definition (compulsory)
-    author:  req.body.author? req.body.author : null,       // published short DID of author for this definition (compulsory)
-    tags:  req.body.tags? req.body.tags : [],               // string of comma separated tags
-    location:  req.body.location? req.body.location : null,       // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
-    key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
-  });
-});
-
-/*
  *      VC: offer / acceptance / issuance
  */
 
