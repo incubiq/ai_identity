@@ -52,3 +52,4 @@ Thumbs.db
 
 build*
 setup.txt
+docker_env_identity
