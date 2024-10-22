@@ -16,7 +16,10 @@
  - video report: https://youtu.be/tG_X_iB81TQ 
  - Identity Node repo updated and functional (wallet creation, entity creation, DID, shemas, definitions, VC offers, Presentation requests, Proof of Claims...) 
 
- 3/ (planned for Oct)
+ 3/ (Sept)
+ - Identity Node repo updated and functional with APIs supporting Non-Custodial and Custodial mode
+ - Identus issues reported
+ - video report: https://youtu.be/n1ZpTRr5Mhw
 
  4/ (planned for Dec)
 

@@ -1,6 +1,8 @@
 {
     "PROD":   false,
     "IDENTUS_ADMIN" :  "my-admin-token",
-    "IDENTUS_HOST" :  "https://securities-angola-spin-conditional.trycloudflare.com/",
-    "TUNNEL":  "https://advantages-jewel-acceptable-infrared.trycloudflare.com/"
+    "IDENTUS_DELAY" : 4000,
+    "IDENTUS_DEFAULT_VALIDITY" : 2592000,
+    "IDENTUS_HOST" :  "https://tom-g-jews-graduates.trycloudflare.com/",
+    "TUNNEL":  "https://gtk-kay-forces-sku.trycloudflare.com/"
 }

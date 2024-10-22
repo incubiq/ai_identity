@@ -1,0 +1,4498 @@
+{
+	"info": {
+		"_postman_id": "d1f7130c-bd85-4518-b432-10c8279275a2",
+		"name": "Identity Node",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3411569"
+	},
+	"item": [
+		{
+			"name": "Basic",
+			"item": [
+				{
+					"name": "public",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"// CREATE ALL HELPERS HERE",
+									"",
+									"postman.setGlobalVariable(\"loadHelpers\", function loadHelpers() {",
+									"\tlet helpers = {};",
+									"",
+									"    helpers.checkJSON = function checkJSON() {",
+									"          pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");",
+									"          });",
+									"    }",
+									"    ",
+									"    helpers.checkStatus = function checkStatus(status) {",
+									"          pm.test(\"response is ok (\"+status+\")\", function () {",
+									"              pm.response.to.have.status(status);",
+									"          });",
+									"    }",
+									"",
+									"    helpers.checkDelay = function checkDelay(ms) {",
+									"        // The response time must be less than ms milliseconds",
+									"        pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+ms+\"ms)\", function () {pm.expect(responseTime).to.be.below(ms);",
+									"        });",
+									"    }",
+									"        ",
+									"    helpers.hasData = function hasData() {",
+									"          pm.test(\"Content has data\", function () { ",
+									"            var jsonData = pm.response.json();",
+									"            pm.expect(jsonData).to.have.property('data');",
+									"            pm.expect(jsonData.data).not.to.have.property('data');",
+									"          });",
+									"    }",
+									"    ",
+									"    helpers.mustContain = function mustContain(text) {",
+									"          pm.test(\"Content contains expected text (\"+text+\")\", function () { ",
+									"            pm.expect(pm.response.text()).to.include(text); ",
+									"          });",
+									"    }",
+									"    ",
+									"    helpers.minArraySize = function minArraySize(a, minSize) {",
+									"          pm.test(\"Array contains enough items (\"+minSize+\")\", function () { ",
+									"            pm.expect(a.length).to.be.at.least(minSize); ",
+									"          });",
+									"    }",
+									"    ",
+									"\thelpers.testSchema = function testSchema(_schema, obj, strSchema) {",
+									"        pm.test(\"Schema \"+strSchema+\" is OK\", function () { ",
+									"            pm.expect(tv4.validate(obj, _schema)).to.be.true;",
+									"        })",
+									"\t}",
+									"\t",
+									"// ------------------------",
+									"//      USER SCHEMA",
+									"// ------------------------",
+									"",
+									"\thelpers.testSchema_User = function testSchema_User(obj, type) {",
+									"\t    var _schema = {",
+									"            type: \"object\",",
+									"            properties: {",
+									"              aIdentity: {\"type\": \"array\"},",
+									"              aPendingIdentity: {\"type\": \"array\"},",
+									"              username: {\"type\": \"string\"},",
+									"              firstName: {\"type\": \"string\"},",
+									"              lastName: {\"type\": \"string\"},",
+									"              email: {\"type\": \"string\"},",
+									"//              picture: {\"type\": \"string\"},",
+									"              lastConnected_at: {\"type\": \"string\"},",
+									"              created_at: {\"type\": \"string\"}",
+									"            },",
+									"            required: [\"aIdentity\", \"aPendingIdentity\", \"username\", \"firstName\", \"lastName\", \"email\", /*\"picture\",*/  \"lastConnected_at\", \"created_at\"]",
+									"        };",
+									"        ",
+									"        pm.test(\"User schema is OK\", function () { ",
+									"            pm.expect(tv4.validate(obj, _schema)).to.be.true;",
+									"        })",
+									"\t}",
+									"\t",
+									"// ------------------------",
+									"//      IDENTITY SCHEMA",
+									"// ------------------------",
+									"",
+									"\thelpers.testSchema_Identity = function testSchema_Identity(obj, type) {",
+									"\t    var _schema = {",
+									"            type: \"object\",",
+									"            properties: {",
+									"              username: {\"type\": \"string\"},",
+									"              firstName: {\"type\": \"string\"},",
+									"              lastName: {\"type\": \"string\"},",
+									"              email: {\"type\": \"string\"},",
+									"              identity_provider: {\"type\": \"string\"},",
+									"             created_at: {\"type\": \"string\"},",
+									"             lastUpdated_at: {\"type\": \"string\"}",
+									"            },",
+									"            required: [ \"username\", \"firstName\", \"lastName\", \"email\",  \"created_at\", \"lastUpdated_at\", \"identity_provider\"]",
+									"        };",
+									"        ",
+									"        pm.test(\"Identity schema is OK\", function () { ",
+									"            pm.expect(tv4.validate(obj, _schema)).to.be.true;",
+									"        })",
+									"\t}",
+									"} + '; loadHelpers();');",
+									"",
+									"",
+									"// ------------------------",
+									"//   TESTS FOR THIS CALL",
+									"// ------------------------",
+									"",
+									"var helpers = eval(globals.loadHelpers);",
+									"",
+									"helpers.checkJSON();",
+									"helpers.checkStatus(200);",
+									"helpers.checkDelay(500);",
+									"helpers.hasData();",
+									"",
+									"pm.test(\"APIs are running\", function () { ",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.status).to.eql('running'); ",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {",
+									"  ",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {",
+									"      pm.response.to.have.status(objParam.status);",
+									"  });",
+									"",
+									"  // The response time must be less than 500 milliseconds",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);",
+									"    });",
+									"    ",
+									"if(objParam.status!=204) {",
+									"    ",
+									"  // The Content-Type must be JSON",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");",
+									"  });",
+									"",
+									"  // structure of JSON is reasonable...",
+									"  pm.test(\"Content has data\", function () { ",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"    pm.expect(jsonData.data).not.to.have.property('data');",
+									"  });",
+									"    ",
+									"}",
+									"",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/v1/public",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"public"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DIDs",
+			"item": [
+				{
+					"name": "identity/dids  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.data;\r",
+									"pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									"pm.environment.set(\"didRef\", _a[0].did);\r",
+									"pm.environment.set(\"did_issuer\", _a[_a.length-1].did);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/dids",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"dids"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "identity/dids  [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.data;\r",
+									"pm.environment.set(\"did_holder\", _a[_a.length-1].did);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/dids",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"dids"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "identity/dids/{{didRef}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/dids/{{didRef}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"dids",
+								"{{didRef}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "identity/dids/{{didLong}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/dids/{{didLong}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"dids",
+								"{{didLong}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "identity/did",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"didLong\", jsonData.longFormDid);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "3fbe53cba18a5c73c3b69421e4f44812460c2e55b7634a77006e54e3f5605a3b-authentication",
+									"type": "text"
+								},
+								{
+									"key": "purpose",
+									"value": "authentication",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/did",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"did"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "identity/entities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.data;\r",
+									"pm.environment.set(\"entity\", _a[0].id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "x-admin-api-key",
+								"value": "{{ADMIN_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/entities",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"entities"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "identity/entity/{{ID}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _id=jsonData.data.walletId;\r",
+									"pm.environment.set(\"wallet\", _id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/entity/{{entity}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"entity",
+								"{{entity}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "identity/entity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "x-admin-api-key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "test-1",
+									"type": "text"
+								},
+								{
+									"key": "mnemonic",
+									"value": "{{mnemonic}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/entity",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"entity"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "identity/entity/{{...}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{ADMIN_TOKEN}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "x-admin-api-key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/identity/entity/61d8a3bc-3b90-49e4-874f-a0b0ce2ca14b",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"identity",
+								"entity",
+								"61d8a3bc-3b90-49e4-874f-a0b0ce2ca14b"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Schema",
+			"item": [
+				{
+					"name": "schema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.data;\r",
+									"pm.environment.set(\"shema_id\", _a[0].id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/schema",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"schema"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "schema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"schema_id\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  name: \"ai_identity\",\r\n  version: \"1.0.1\",\r\n  description: \"An AI's identity attributes\",\r\n  type: \"https://w3c-ccg.github.io/vc-json-schemas/schema/2.0/schema.json\",\r\n  author: \"did:prism:a0b6cf03da3812357dd0fa043e3a7595bae6749974c10d9cc0f3a4e4314fa9a2\",\r\n  tags: [\r\n    \"AI\"\r\n  ],\r\n  schema: {\r\n    $id: \"https://complement-applied-nov-pattern.trycloudflare.com/assets/schema/ai_identity_1_0_1.json\",\r\n    $schema: \"https://json-schema.org/draft/2020-12/schema\",\r\n    description: \"An AI's identity attributes\",\r\n    type: \"object\",\r\n    properties: {\r\n      uid: {\r\n        type: \"string\"\r\n      },\r\n      name: {\r\n        type: \"string\"\r\n      },\r\n      repo: {\r\n        type: \"string\"\r\n      }\r\n    },\r\n    required: [\r\n      \"uid\",\r\n      \"name\",\r\n      \"repo\"\r\n    ],\r\n    additionalProperties: true\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/schema/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"schema",
+								""
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "schema/{{id}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"schema_id\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  name: \"ai_identity\",\r\n  version: \"1.0.2\",\r\n  description: \"An AI's identity attributes\",\r\n  type: \"https://w3c-ccg.github.io/vc-json-schemas/schema/2.0/schema.json\",\r\n  author: \"did:prism:a0b6cf03da3812357dd0fa043e3a7595bae6749974c10d9cc0f3a4e4314fa9a2\",\r\n  tags: [\r\n    \"AI\",\r\n    \"identity\"\r\n  ]\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/schema/{{schema_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"schema",
+								"{{schema_id}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "schema/install",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/schema/install",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"schema",
+								"install"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Communication",
+			"item": [
+				{
+					"name": "p2p  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.data;\r",
+									"pm.environment.set(\"issuer_connection_id\", _a[0].connectionId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/p2p",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"p2p"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "p2p  [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.data;\r",
+									"pm.environment.set(\"holder_connection_id\", _a[0].connectionId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/p2p",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"p2p"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "p2p/{{id}}  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _c=jsonData.data;\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/p2p/{{issuer_connection_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"p2p",
+								"{{issuer_connection_id}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "p2p/{{id}}  [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _c=jsonData.data;\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/p2p/{{holder_connection_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"p2p",
+								"{{holder_connection_id}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "p2p/invite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "from",
+									"value": "ai_ping",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/ap1/v1/p2p/invite",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"ap1",
+								"v1",
+								"p2p",
+								"invite"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "p2p/accept",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "invitation",
+									"value": "eyJpZCI6IjZkOTAyMmI3LTkwMDAtNGJhNC1hYzNjLTVmZGIyZDgxZDFlYyIsInR5cGUiOiJodHRwczovL2RpZGNvbW0ub3JnL291dC1vZi1iYW5kLzIuMC9pbnZpdGF0aW9uIiwiZnJvbSI6ImRpZDpwZWVyOjIuRXo2TFNvcGQyb3dXdUd5N0NRUWRUQ1E5QTVnYVBScjU5eWFFd242WFo2NHI5bVdVQy5WejZNa3dTTjJKOTNKQUZLdEFCTXhDcmtMakJXdzM4R2huMm5odHpzc1ZlMmZUakhULlNleUowSWpvaVpHMGlMQ0p6SWpwN0luVnlhU0k2SW1oMGRIQTZMeTlvYjNOMExtUnZZMnRsY2k1cGJuUmxjbTVoYkRvNE1UQXdMMlJwWkdOdmJXMGlMQ0p5SWpwYlhTd2lZU0k2V3lKa2FXUmpiMjF0TDNZeUlsMTlmUSIsImJvZHkiOnsiZ29hbF9jb2RlIjoiaXNzdWUtdmMgdG8gQUktMSIsImdvYWwiOiJUbyBpc3N1ZSBhIFZDIHRvIEFJLTEiLCJhY2NlcHQiOltdfX0=",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/p2p/accept",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"p2p",
+								"accept"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "p2p/custodial/connect",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var json=jsonData.data;\r",
+									"\r",
+									"pm.environment.set(\"thid\", json.thid);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									"postman.setGlobalVariable(\"commonTests\", (objParam) => {\r",
+									"  \r",
+									"  pm.test(\"response is ok (\"+objParam.status+\")\", function () {\r",
+									"      pm.response.to.have.status(objParam.status);\r",
+									"  });\r",
+									"\r",
+									"  // The response time must be less than 500 milliseconds\r",
+									"  pm.test(\"Response time is acceptable (\"+responseTime+\"ms vs \"+objParam.delay+\"ms)\", function () {pm.expect(responseTime).to.be.below(objParam.delay);\r",
+									"    });\r",
+									"    \r",
+									"if(objParam.status!=204) {\r",
+									"    \r",
+									"  // The Content-Type must be JSON\r",
+									"  pm.test(\"Content-Type header is set\", function(){ pm.expect(postman.getResponseHeader(\"Content-Type\")).to.include(\"application/json\");\r",
+									"  });\r",
+									"\r",
+									"  // structure of JSON is reasonable...\r",
+									"  pm.test(\"Content has data\", function () { \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property('data');\r",
+									"    pm.expect(jsonData.data).not.to.have.property('data');\r",
+									"  });\r",
+									"    \r",
+									"}\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "key_peer1",
+									"value": "{{APIKEY}}",
+									"type": "text"
+								},
+								{
+									"key": "key_peer2",
+									"value": "{{APIKEY_AI}}",
+									"type": "text"
+								},
+								{
+									"key": "name_peer1",
+									"value": "osais",
+									"type": "text"
+								},
+								{
+									"key": "name_peer2",
+									"value": "ping",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/p2p/custodial/onnect",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"p2p",
+								"custodial",
+								"onnect"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "wallet/mnemonic",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"mnemonic\", jsonData.data.mnemonic);\r",
+									"pm.environment.set(\"seed\", jsonData.data.seed);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/wallet/mnemonic",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wallet",
+								"mnemonic"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "wallet/{{mnemonic}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"public_addr\", jsonData.data.addr);\r",
+									"pm.environment.set(\"private_addr\", jsonData.data.private);\r",
+									"pm.environment.set(\"seed\", jsonData.data.seed);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/wallet/{{mnemonic}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wallet",
+								"{{mnemonic}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "VC - Definition",
+			"item": [
+				{
+					"name": "definition",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"def_uid\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/definition",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"definition"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "definition/{{uid}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/definition/{{def_uid}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"definition",
+								"{{def_uid}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "credential-definition-registry/definitions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(201);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"schema_id\", jsonData.id);\r",
+									"pm.environment.set(\"schema_idLong\", jsonData.longId);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"name": "Content-Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"origin\",\r\n  \"description\": \"Identity of an AI\",\r\n  \"version\": \"1.0.1\",\r\n  \"tag\": \"AI\",\r\n  \"author\": \"did:prism:31c042da2d0e74ca0a28f7d2b1942bf4ce80776729573176c4763f1f2477deaf\",\r\n  \"schemaId\": \"https://allergy-glory-guarantees-une.trycloudflare.com/assets/credentials/ai_identity.json\",\r\n  \"signatureType\": \"CL\",\r\n  \"supportRevocation\": true\r\n}"
+						},
+						"url": {
+							"raw": "{{host}}/prism-agent/credential-definition-registry/definitions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"prism-agent",
+								"credential-definition-registry",
+								"definitions"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "VC - Offer",
+			"item": [
+				{
+					"name": "vc/offers  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"// pm.environment.set(\"recordAccept\", _a[_a.length-1].recordId);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/vc/offers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vc",
+								"offers"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "vc/offers  [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"// pm.environment.set(\"recordAccept\", _a[_a.length-1].recordId);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/vc/offers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vc",
+								"offers"
+							],
+							"query": [
+								{
+									"key": "thid",
+									"value": "0188a609-a11d-4784-96e2-90ce4c765ab5",
+									"disabled": true
+								}
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "vc/offer/{id}  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/vc/offer/{{issuer_record_id}}  ",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vc",
+								"offer",
+								"{{issuer_record_id}}  "
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "vc/offer/{id}  [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/vc/offer/{{holder_record_id}}  ",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vc",
+								"offer",
+								"{{holder_record_id}}  "
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "vc/offer-noschema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"recordOffer\", jsonData.recordId);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "connection",
+									"value": "{{issuer_connection_id}}",
+									"type": "text"
+								},
+								{
+									"key": "author",
+									"value": "{{didRef}}",
+									"type": "text"
+								},
+								{
+									"key": "validity",
+									"value": "3600",
+									"type": "text"
+								},
+								{
+									"key": "claims",
+									"value": "{\"uid\": \"12345\",\"name\": \"Stable Diffusion SDXL\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/vc/offer-noschema",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vc",
+								"offer-noschema"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "vc/accept",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var _a=jsonData.contents;\r",
+									"pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									"pm.environment.set(\"didRef\", _a[0].did);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "recordId",
+									"value": "{{holder_record_id}}",
+									"type": "text"
+								},
+								{
+									"key": "did",
+									"value": "4991eabd22fece0d5c187631684ceb02543ad0943ac847e92159a711113c1d3b",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/vc/accept",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vc",
+								"accept"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "vc/issue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"//pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "recordId",
+									"value": "{{issuer_record_id}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/vc/issue",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"vc",
+								"issue"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "vc/issuance/custodial",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"//pm.environment.set(\"didLong\", _a[0].longFormDid);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "connection",
+									"value": "{{issuer_connection_id}}",
+									"type": "text"
+								},
+								{
+									"key": "key_peer1",
+									"value": "{{APIKEY}}",
+									"type": "text"
+								},
+								{
+									"key": "key_peer2",
+									"value": "{{APIKEY_AI}}",
+									"type": "text"
+								},
+								{
+									"key": "did_peer1",
+									"value": "{{did_issuer}}",
+									"type": "text"
+								},
+								{
+									"key": "did_peer2",
+									"value": "{{did_holder}}",
+									"type": "text"
+								},
+								{
+									"key": "claims",
+									"value": "{\"claim_type\": \"test\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/vc/issuance/custodial",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"vc",
+								"issuance",
+								"custodial"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "VC - Proof",
+			"item": [
+				{
+					"name": "proof/presentations  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"verifier_presentation_id\", jsonData.data[jsonData.data.length-1].presentationId);\r",
+									"pm.environment.set(\"issuer_last_thid\", jsonData.data[jsonData.data.length-1].thid);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentations",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentations"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "proof/presentations  [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"holder_presentation_id\", jsonData.data[jsonData.data.length-1].presentationId);\r",
+									"pm.environment.set(\"holder_last_thid\", jsonData.data[jsonData.data.length-1].thid);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentations?status=PresentationSent",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentations"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PresentationSent"
+								}
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "proof/presentations?thid=... [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();if(jsonData.data.length>0) {\r",
+									"    pm.environment.set(\"issuer_presentation_id\", jsonData.data[0].presentationId);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentations?thid={{issuer_last_thid}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentations"
+							],
+							"query": [
+								{
+									"key": "thid",
+									"value": "{{issuer_last_thid}}"
+								}
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "proof/presentations?thid=... [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"if(jsonData.data.length>0) {\r",
+									"pm.environment.set(\"holder_presentation_id\", jsonData.data[0].presentationId)\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentations?thid={{holder_last_thid}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentations"
+							],
+							"query": [
+								{
+									"key": "thid",
+									"value": "{{holder_last_thid}}"
+								}
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "proof/presentation/match/{{challenge}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"holder_presentation_id\", jsonData.contents[0].presentationId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentation/match/identity",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentation",
+								"match",
+								"identity"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "proof/presentation  [OSAIS]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"holder_last_thid\", jsonData.data.thid)\r",
+									"\r",
+									"pm.environment.set(\"verifier_presentation_id\", jsonData.data.presentationId)\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "connection",
+									"value": "{{issuer_connection_id}}",
+									"type": "text"
+								},
+								{
+									"key": "challenge",
+									"value": "Prove your identity",
+									"type": "text"
+								},
+								{
+									"key": "domain",
+									"value": "localhost:3022",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentation",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentation"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "proof/presentation/accept [AI]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"verifier_last_thid\", jsonData.data.thid)\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY_AI}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "presentationId",
+									"value": "{{holder_presentation_id}}",
+									"type": "text"
+								},
+								{
+									"key": "recordId",
+									"value": "36550432-3b27-4045-9c71-0ec232cd7e7c",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentation/accept",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentation",
+								"accept"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "proof/presentation/{id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "{{APIKEY}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "apikey",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentation/{{verifier_presentation_id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentation",
+								"{{verifier_presentation_id}}"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				},
+				{
+					"name": "proof/presentation/custodial",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var helpers = eval(globals.loadHelpers);\r",
+									"\r",
+									"helpers.checkJSON();\r",
+									"helpers.checkStatus(200);\r",
+									"helpers.checkDelay(400);\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"followOriginalHttpMethod": false
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "null"
+							},
+							{
+								"key": "charset",
+								"value": "UTF-8"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "key_peer1",
+									"value": "{{APIKEY}}",
+									"type": "text"
+								},
+								{
+									"key": "key_peer2",
+									"value": "{{APIKEY_AI}}",
+									"type": "text"
+								},
+								{
+									"key": "connection",
+									"value": "{{issuer_connection_id}}",
+									"type": "text"
+								},
+								{
+									"key": "domain",
+									"value": "test.com",
+									"type": "text"
+								},
+								{
+									"key": "claim_type",
+									"value": "identity",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/proof/presentation/custodial",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"proof",
+								"presentation",
+								"custodial"
+							]
+						},
+						"description": "testing minimum response time as well as basic call"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "verification/policies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"followOriginalHttpMethod": false
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{APIKEY}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apikey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "null"
+					},
+					{
+						"key": "charset",
+						"value": "UTF-8"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"name": "Content-Type",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{host}}/prism-agent/verification/policies",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"prism-agent",
+						"verification",
+						"policies"
+					]
+				},
+				"description": "testing minimum response time as well as basic call"
+			},
+			"response": []
+		},
+		{
+			"name": "schema-registry/schemas Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"followOriginalHttpMethod": false
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{APIKEY}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apikey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "null"
+					},
+					{
+						"key": "charset",
+						"value": "UTF-8"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"name": "Content-Type",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{host}}/prism-agent/schema-registry/schemas/0edc8ab5-70b8-321e-a740-a44efa9edffc",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"prism-agent",
+						"schema-registry",
+						"schemas",
+						"0edc8ab5-70b8-321e-a740-a44efa9edffc"
+					]
+				},
+				"description": "testing minimum response time as well as basic call"
+			},
+			"response": []
+		},
+		{
+			"name": "events/webhooks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"followOriginalHttpMethod": false
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{APIKEY}}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "apiKey",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "null"
+					},
+					{
+						"key": "charset",
+						"value": "UTF-8"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"name": "Content-Type",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{host}}/prism-agent/events/webhooks",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"prism-agent",
+						"events",
+						"webhooks"
+					]
+				},
+				"description": "testing minimum response time as well as basic call"
+			},
+			"response": []
+		}
+	]
+}
