@@ -24,6 +24,16 @@ const getIdentusAgent = () => {
     return getIdentusHost() + "cloud-agent/";
 }
 
+const async_getAdminStatus = async() => {
+    return {
+        data: {
+            isAdmin: true,    
+            host: getIdentusHost(),
+            agent: getIdentusAgent()   
+        }
+    }
+}
+
 const getAdminHeader = () => {
     return { 
         name: 'content-type',
@@ -126,8 +136,10 @@ module.exports = {
     DIR_ASSET_CREDS, 
     DIR_ASSET_SCHEMA,
     
+    getIdentusAdminKey,
     getIdentusHost,
     getIdentusAgent,
+    async_getAdminStatus,
 
     getAdminHeader,
     getEntityHeader,
