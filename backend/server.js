@@ -70,6 +70,7 @@ if(gConfig.isDocker || process.env.DOCKER===true || process.env.DOCKER==="true")
     gConfig.isDebug=false;
     gConfig.origin="https://identity.opensourceais.com/",
     console.log("DOCKER=TRUE");
+    console.log("DEBUG=FALSE");
 
     // process config from params passed to docker
     _setParams(process.env);

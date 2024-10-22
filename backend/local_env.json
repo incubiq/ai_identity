@@ -1,8 +1,8 @@
 {
     "PROD":   false,
-    "IDENTUS_ADMIN" :  "my-admin-token",
+    "IDENTUS_ADMIN" :  "my-secret",
     "IDENTUS_DELAY" : 4000,
     "IDENTUS_DEFAULT_VALIDITY" : 2592000,
-    "IDENTUS_HOST" :  "https://tom-g-jews-graduates.trycloudflare.com/",
+    "IDENTUS_HOST" :  "http://identus.opensourceais.com/",
     "TUNNEL":  "https://gtk-kay-forces-sku.trycloudflare.com/"
 }
