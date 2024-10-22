@@ -4,17 +4,41 @@
  */
 
 const srvIdentusUtils = require("./util_identus_utils");
+const srvIdentusIdentity = require("../utils/util_identus_identity");
+const srvIdentusCreds = require("../utils/util_identus_credentials");
 const jwtDecode = require('jwt-decode');
+const { consoleLog } = require("./util_services");
+
+const STATUS_PROVER_PROOF_REQRECEIVED="RequestReceived";
+const STATUS_PROVER_PROOF_SENT="PresentationSent";
 
 /*
  *       VC - Proof / Verification
  */
 
 const async_getAllVCPresentationRequests = async function (objParam) {
-    return srvIdentusUtils.async_simpleGet("present-proof/presentations"+(objParam.thid? "?thid="+objParam.thid: ""), objParam.key);
+    try {
+        let _url="present-proof/presentations"+(objParam.thid? "?thid="+objParam.thid: "");
+        let dataRet = await srvIdentusUtils.async_simpleGet(_url, objParam.key);
+
+        // filter out with status?
+        let _aRet=[];
+        if(objParam.status) {
+            dataRet.data.forEach(item => {
+                if(item.status==objParam.status) {
+                    _aRet.push(item);
+                }
+            })
+            return {data: _aRet}
+        }
+
+        return dataRet;
+    }
+    catch(err) {throw err}
+    
 }
 
-const async_getFirstHolderVCPresentationMatchingType = async function (objParam) {
+const async_getFirstHolderPresentationRequestMatchingType = async function (objParam) {
     try {
         // all requests received from holder point of view
         let aPresReceived = await async_getAllVCPresentationRequests({
@@ -23,68 +47,94 @@ const async_getFirstHolderVCPresentationMatchingType = async function (objParam)
 
         // no request? Houston we have a problem... F@@# wait time not long enough or what else?
         if(aPresReceived.data && aPresReceived.data.length==0) {
+            let dataDID = await srvIdentusIdentity.async_getDidForEntity({
+                key: objParam.key,
+            })
             throw({
                 data:null,
                 status: 404,
-                statusText: "No presentation request received so far"
+                statusText: "No presentation request received so far"+(objParam.thid? " (thid="+objParam.thid+")" : " for DID "+dataDID.data[0].did)
             })
         }
 
         // we need to check in all VC received by peer2, if one matches the proof request
-        let _bestMatch=null;
+        let _presId=null;
+        let _proof=null;
+        let _claim=null;
+        let _thid=null;
         let _cVCAccepted=null;
         let isValid=false;
         let hasSameType=false;
         aPresReceived.data.forEach(item => {
 
-            // only filter through Presentations Sent (in a final state), but keep first mathing one if we have it
-            if(_bestMatch==null && item.status == "PresentationSent") {
+            // filter through given status (if no status, only get those Proofs in a final state), but keep first mathing one if we have it
+            let _filterStatus = objParam.status? objParam.status : STATUS_PROVER_PROOF_SENT;      
+            if(_presId==null && item.status == _filterStatus) {
                 _cVCAccepted++;
-                const decoded_wrapper = jwtDecode(item.data[0]);
-                const type=decoded_wrapper.nonce;
 
                 // happy with the challenge requested?
-                const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
-                const decoded_proof = jwtDecode(encoded_proof);
-                const dateExpire = new Date(decoded_proof.exp * 1000);
-                const now = new Date();
-                if(dateExpire> now) {
-                    isValid=true;
+                const _options=(item.requestData? JSON.parse(item.requestData[0]).options : {});
+                if(_options.challenge==objParam.claim_type) {
 
-                    // we have a valid claim, but is it of same type? 
-                    if(decoded_proof.vc.credentialSubject && decoded_proof.vc.credentialSubject.claim_type==objParam.type) {
-                        hasSameType=true;
-                        _bestMatch=decoded_proof.vc.credentialSubject;
+                    _presId=item.presentationId;
+                    _thid=item.thid;
+                    hasSameType=true;
+
+                    if(_filterStatus===STATUS_PROVER_PROOF_SENT) {
+                        _proof=item.data[0];
+                        const decoded_wrapper = jwtDecode(item.data[0]);
+                        const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
+                        const decoded_proof = jwtDecode(encoded_proof);
+                        const dateExpire = new Date(decoded_proof.exp * 1000);
+                        const now = new Date();
+//                        if(dateExpire> now) {              SHIT Identus expiry date does not work, so we cannot compare...
+    
+                            // now this must be the one 
+                            if(decoded_proof.vc.credentialSubject && decoded_proof.vc.credentialSubject.claim_type==objParam.claim_type) {
+                                isValid=true;
+                                delete decoded_proof.vc.credentialSubject.id;
+                                _claim=decoded_proof.vc.credentialSubject;
+                                return;
+                            }
+//                        }
+
+                        // it s not good in the end...
+                        _presId=null;
                     }
-                }                
+                }
             }
         })
 
-        if(!_bestMatch) {
+        if(!_presId) {
             if(_cVCAccepted==0) {
                 throw({
                     data:null,
                     status: 404,
-                    statusText: "Holder does not hold any Verifiable Credential yet"
-                })    
-            }
-            if(!isValid) {
-                throw({
-                    data:null,
-                    status: 404,
-                    statusText: "All proofs have expired for this proof type ("+objParam.type+")"
+                    statusText: "Holder does not hold any Proof yet"
                 })    
             }
             if(!hasSameType) {
                 throw({
                     data:null,
                     status: 404,
-                    statusText: "No matching Verifiable Credential for this proof request (type: "+objParam.type+")"
+                    statusText: "No matching presentation for this proof request (type: "+objParam.claim_type+")"
+                })    
+            }
+            if(!isValid) {
+                throw({
+                    data:null,
+                    status: 404,
+                    statusText: "All proofs have expired for this proof type ("+objParam.claim_type+")"
                 })    
             }
         }
 
-        return {data: _bestMatch}
+        return {data: {
+            presentationId: _presId,
+            thid: _thid,
+            proof: _proof,
+            claim: _claim
+        }}
     }
     catch(err) {throw err}
 }
@@ -92,17 +142,17 @@ const async_getFirstHolderVCPresentationMatchingType = async function (objParam)
 const async_createVCPresentationRequest = async function (objParam) {
     try {
 
-        let data= await  srvIdentusUtils.async_simplePost("present-proof/presentations/", objParam.key, {
+        let dataRet= await  srvIdentusUtils.async_simplePost("present-proof/presentations/", objParam.key, {
             connectionId: objParam.connection,
-            proofs: objParam.proofs,
+            proofs: objParam.proofs? objParam.proofs: [],
             options:{
                 challenge: objParam.challenge,
                 domain: objParam.domain
             },
             credentialFormat: "JWT"
         });
-
-        return data;
+        consoleLog("Verifier issued a presentation request (thid="+dataRet.data.thid+ ")");
+        return dataRet;
     }
     catch(err) {throw err}
 }
@@ -111,66 +161,113 @@ const async_createVCPresentationRequest = async function (objParam) {
 const async_acceptVCPresentation = async function (objParam) {
     // patching presentation
     try {
-        // F@@# Identus will fail if called within less than 4, 5, or 6 secs after this call... oh my... we slow it down
-        await new Promise(resolve => setTimeout(resolve, 8000));        // wait for 4sec
-
-        let data= await srvIdentusUtils.async_simplePatch("present-proof/presentations/"+objParam.presentationId, objParam.key, {
+        let dataRet= await srvIdentusUtils.async_simplePatch("present-proof/presentations/"+objParam.presentationId, objParam.key, {
             action: "request-accept",
             proofId: [objParam.recordId]
         });
-
-        return data;
+        consoleLog("Prover accepts presentation request with record (thid="+dataRet.data.thid+ ")");
+        return dataRet;
     }
     catch(err) {throw err}
 }
 
 // from verifier point of view
-const async_getVCProof = async function (objParam) {
+const async_issueVCProof = async function (objParam) {
     // patching presentation
     try {
-        let data= await srvIdentusUtils.async_simplePatch("present-proof/presentations/"+objParam.presentationId, objParam.key, {
+        let dataRet= await srvIdentusUtils.async_simplePatch("present-proof/presentations/"+objParam.presentationId, objParam.key, {
             action: "presentation-accept"
         });
-
-        return data;
+        consoleLog("Verifier presented proof (thid="+dataRet.data.thid+ ")");
+        return dataRet;
     }
     catch(err) {throw err}
 }
 
-// from verifier point of view
-const async_getCustodialProof = async function (objParam) {
+// from verifier point of view (includes holder actions)
+const async_createCustodialProof = async function (objParam) {
     // we have a custodial context, we can do all in one go
     try {
-        let dataPresReq = await async_createVCPresentationRequest({
+        // if the proof already exists, we take it
+        let dataExist=null;
+        if(objParam.noDuplicate) {
+            try {            
+                dataExist= await async_getFirstHolderPresentationRequestMatchingType({
+                    key: objParam.keyPeer2,
+                    claim_type: objParam.claim_type,
+                })
+                return dataExist;
+            }
+            catch(err) {}
+        }
+
+        // we don t have any existing one.. so we request it
+        let dataPresReqAsVerifier = await async_createVCPresentationRequest({
             key: objParam.keyPeer1,
             connection: objParam.connection,
-            challenge: objParam.challenge,
+            challenge: objParam.claim_type,
             domain: objParam.domain, 
-            proofs: [] //objParam.proofs
         });
 
         // F@@# Identus will fail if called within less than 4, 5, or 6 secs after this call... oh my... we slow it down
-        srvIdentusUtils.wait(3000);
-
-        let dataBestMatch = await async_getFirstHolderVCPresentationMatchingType({
+        await srvIdentusUtils.wait(gConfig.identus.delay);
+        
+        let dataPresReqAsHolder = await async_getAllVCPresentationRequests({
             key: objParam.keyPeer2,
-            type: objParam.type
+            thid: dataPresReqAsVerifier.data.thid
         })
+
+        let objBestMatchRecord=null;
+        
+        // force selection of a specific creds?
+        if (objParam.thid) {
+            let _a = await srvIdentusCreds.async_getAllVCOffers({
+                key: objParam.keyPeer2,
+                thid: objParam.thid,
+            })
+            if (_a && _a.data && _a.data.length==1) {
+                objBestMatchRecord=_a.data[0];
+            }
+        }
+
+        // no creds found or forced? select best match
+        if(!objBestMatchRecord) {
+            let dataBestMatchRecord = await srvIdentusCreds.async_getFirstHolderVCMatchingType({
+                key: objParam.keyPeer2,
+                claim_type: objParam.claim_type
+            })  
+            objBestMatchRecord=dataBestMatchRecord.data;
+        }
 
         let dataAccept = await async_acceptVCPresentation({
             key: objParam.keyPeer2,
-            presentationId: dataPresReq.data.presentationId,
+            presentationId: dataPresReqAsHolder.data[0].presentationId,
+            recordId: objBestMatchRecord.recordId
         });
 
         // F@@# Identus will fail if called within less than 4, 5, or 6 secs after this call... oh my... we slow it down
-        srvIdentusUtils.wait(8000);
+        // !!! double wait for the Proof issuance (or it fails too often)
+        await srvIdentusUtils.wait(gConfig.identus.delay);
+        await srvIdentusUtils.wait(gConfig.identus.delay);
 
-        let data= await async_getVCProof({
+        let dataProof= await async_issueVCProof({
             key: objParam.keyPeer1,
-            presentationId: dataPresReq.data.presentationId,
+            presentationId: dataPresReqAsVerifier.data.presentationId,
         });
 
-        return data;
+        const decoded_wrapper = jwtDecode(dataProof.data.data[0]);
+        const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
+        const decoded_proof = jwtDecode(encoded_proof);
+        delete decoded_proof.vc.credentialSubject.id;
+        return {
+            data: {
+                wasPresented: true,
+                wasAccepted: true,
+                thid: dataProof.data.thid,
+                proof: dataProof.data.data[0],
+                claim: decoded_proof.vc.credentialSubject
+            }
+        }
     }
     catch(err) {throw err}
 }
@@ -180,8 +277,8 @@ const async_getCustodialProof = async function (objParam) {
 module.exports = {
     async_createVCPresentationRequest,
     async_getAllVCPresentationRequests,
-    async_getFirstHolderVCPresentationMatchingType,
+    async_getFirstHolderPresentationRequestMatchingType,
     async_acceptVCPresentation,
-    async_getVCProof,
-    async_getCustodialProof
+    async_issueVCProof,
+    async_createCustodialProof
 }

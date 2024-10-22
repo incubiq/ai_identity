@@ -8,38 +8,6 @@ const srvIdentusCreds = require("../utils/util_identus_credentials");
 // all routes here start with               api/v1/vc/
 
 /*
- *      VC defintions
- */
-
-// GET all definitions
-router.get("/definitions", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusDef.async_getAllVCDefinitions, {
-    key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
-  });
-});
-
-// GET a definition (by guid)
-router.get("/definition/:guid", function(req, res, next) {
-  routeUtils.apiGet(req, res, srvIdentusDef.async_getVCDefinition, {
-    guid: req.params.guid? req.params.guid: null,                    // guid of definition to search for (compulsory)
-    key: req.headers.apikey? req.headers.apikey: null                // apikey to get in the header...
-  });
-});
-
-// POST VC definition
-router.post("/definition", function(req, res, next) {
-  routeUtils.apiPost(req, res, srvIdentusDef.async_createVCDefinition, {
-    name:  req.body.name? req.body.name : null,             // name for this definition (compulsory)
-    version: req.body.version? req.body.version : "1.0.0",  // version for this definition (optional)
-    description:  req.body.description? req.body.description : null,     // description for this definition (compulsory)
-    author:  req.body.author? req.body.author : null,       // published short DID of author for this definition (compulsory)
-    tags:  req.body.tags? req.body.tags : [],               // string of comma separated tags
-    location:  req.body.location? req.body.location : null,       // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
-    key: req.headers.apikey? req.headers.apikey: null                    // apikey to get in the header...
-  });
-});
-
-/*
  *      VC: offer / acceptance / issuance
  */
 
@@ -48,7 +16,7 @@ router.post("/offer-noschema", function(req, res, next) {
   routeUtils.apiPost(req, res, srvIdentusCreds.async_createVCOfferWithoutSchema, {
     connection:  req.body.connection? req.body.connection : null,   // didComm connection_id for exchanging request (offer/accept)
     author:  req.body.author? req.body.author : null,               // published short DID of author for this offer
-    validity:  req.body.validity? req.body.validity : 3600,         // offer valid for x seconds (1h by defalut)
+    validity:  req.body.validity? req.body.validity : gConfig.identus.validity,         // offer valid for x seconds (30 days by defalut)
 //    definition:  req.body.definition? req.body.definition : null,   // id of the definition VC 
 //    location:  req.body.location? req.body.location : null,         // location of the schema (eg : https://<identity_repo>/assets/credentials/<name>.json)
     claims:  req.body.claims? req.body.claims : {},                 // the claims to be issued in the VC (no idea why they are here, they are already in the definition)
@@ -89,5 +57,28 @@ router.post("/issue", function(req, res, next) {
     key: req.headers.apikey? req.headers.apikey: null         // apikey to get in the header...
   });
 });
+
+// GET first VC that matches a type (point of view of Holder)
+router.get("/match/:type", function(req, res, next) {
+  routeUtils.apiGet(req, res, srvIdentusCreds.async_getFirstHolderVCMatchingType, {
+    key: req.headers.apikey? req.headers.apikey: null,             // apikey to get in the header...,
+    claim_type: req.params.type
+  });
+});
+
+// POST - will do a full offer + accept + issue vc (custodial mode)
+router.post("/issuance/custodial", function(req, res, next) {
+  routeUtils.apiPost(req, res, srvIdentusCreds.async_createCustodialCredential, {
+    connection: req.body.connection? req.body.connection: null,       // the connectionId between issuer and holder (compulsory)
+    keyPeer1: req.body.key_peer1? req.body.key_peer1: null,           // apikey of peer 1 (issuer)
+    keyPeer2: req.body.key_peer2? req.body.key_peer2: null,           // apikey of peer 2 (holder)
+    didPeer1:  req.body.did_peer1? req.body.did_peer1 : null,         // published short DID of issuer
+    didPeer2:  req.body.did_peer2? req.body.did_peer2 : null,         // published short DID of holder
+    validity:  req.body.validity? req.body.validity : gConfig.identus.validity,           // offer valid for x seconds (30d by defalut)
+    claims:  req.body.claims? req.body.claims : {},                   // the claims to be issued in the VC
+    noDuplicate: req.body.noDuplicate!=null ? !(req.body.noDuplicate==false || req.body.noDuplicate=="false") : true,   // no duplicate of issuance of same type
+  });
+});
+
 
 module.exports = router;
