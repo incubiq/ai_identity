@@ -15,8 +15,9 @@ global.gConfig={
 
     // cookie / auth
     appName: "identity",                    // app Name used for naming the cookie
-    jwtKey: "mysecretforIdentityJWT",       // some basic key for encoding cookies 
+    jwtKey: "mysecretforIdentityJWT_123@098",       // some basic key for encoding cookies 
     authentication_expire: "72h",           // 72 hours expiration of our cookie
+    cookieSecret: "dsf9823525fc23",
 
     // sender email
     email: "info@opensourceais.com",

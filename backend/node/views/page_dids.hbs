@@ -1,0 +1,16 @@
+<h1>List of entities</h1>
+{{#if param.items.length}}
+  <ul>
+    {{#each param.items}}
+      <li>{{name}}</li>
+      <ul>
+        <li>ID: {{id}}</li>
+        <li>date created: {{createdAt}}</li>
+        <li><a href="">access DIDs</a></li>
+      </ul>
+      <br />
+    {{/each}}
+  </ul>
+{{else}}
+  <p> No entities yet</p>
+{{/if}}
