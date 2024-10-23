@@ -1,0 +1,31 @@
+<h1>List of registered entities</h1>
+<i>To access an Entity's DID, Wallet, or Credentials, you need to provide its key (🔴 = no access ; 🟢 = access granted)</i>
+<br />
+<br />
+{{#if param.items.length}}
+  <div class="grid">
+    {{#each param.items}}    
+    <div class ="item">
+      <p><b>{{name}}</b></p>
+      {{#if key}} 
+        <div class="key haskey">🟢</div>
+      {{else}}
+        <div class="key nokey">🔴</div>
+      {{/if}}
+      <ul>
+        <li>ID: {{id}}</li>
+        <li>date created: {{createdAt}}</li>
+        {{#if key}} 
+        <li><a href="/static/entity/{{id}}">access DIDs</a></li>
+        <li><a href="/static/proof/{{id}}">access Proofs</a></li>
+        {{else}}
+          <a href="/static/entity/{{id}}">provide key to access data...</a>
+        {{/if}}
+
+      </ul>
+    </div>
+    {{/each}}
+  </div>
+{{else}}
+  <p> No entities yet</p>
+{{/if}}

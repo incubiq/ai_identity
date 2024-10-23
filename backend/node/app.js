@@ -34,6 +34,7 @@ const srvIdentusUtil = require("./utils/util_identus_utils");
 
             app.use(bodyParser.urlencoded({ extended: false }));
             app.use(bodyParser.json({limit: '50mb'})); 
+            app.use(cookieParser());
             app.use(require('express-session')({
                 secret: config.jwtKey,
                 name: config.appName,

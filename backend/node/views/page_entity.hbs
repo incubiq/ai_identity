@@ -1,0 +1,66 @@
+<h1>Entity {{param.entity.name}}</h1>
+  {{#if param.key}} 
+    <div class="key haskey">🟢 Access to data is granted</div>
+  {{else}}
+    <div class="key nokey">🔴 Provide key to access private data</div>
+    <br />
+    <form style="margin-left: 24px;" id="form-entity-secret" action="/static/entity/{{param.entity.id}}/secret" method="POST">
+      <label for="secret">Key: </label>
+      <input type="text" id="secret" name="secret"
+      />
+      <button type="submit">OK</button>
+    </form>
+  {{/if}}
+
+  <h3>Entity</h3>
+  <ul>
+    <li>ID: {{param.entity.id}}</li>
+    <li>date created: {{param.entity.createdAt}}</li>
+  </ul>
+
+  {{#if param.key}} 
+
+    {{#if param.aDid}} 
+      <h3>Digital Identities</h3>
+      <ul>
+        {{#each param.aDid}}            
+          <li>
+            <span>{{status}}:</span> 
+            <span >{{did}}</span>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+        <h3>No recorded Digital Identity</h3>
+    {{/if}}
+    
+    {{#if param.aConnect}} 
+      <h3>P2P connections</h3>
+      <ul>
+        {{#each param.aConnect}}            
+          <li>
+            <span>{{label}}:</span> 
+            <span >({{state}})</span>
+            <span > - {{createdAt}}</span>
+          </li>
+        {{/each}}
+      </ul>
+      {{else}}
+        <h3>No connection available</h3>
+      {{/if}}
+
+    {{#if param.aProof}} 
+      <h3>Proofs</h3>
+      <ul>
+        {{#each param.aProof}}            
+          <li>
+            <span>{{label}}:</span> 
+            <span >({{state}})</span>
+            <span > - {{createdAt}}</span>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <h3>No proof record available</h3>
+    {{/if}}
+  {{/if}}
