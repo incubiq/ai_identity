@@ -144,7 +144,7 @@ Security benefits of this setup:
 
 Here the changes:
    - at the end of the  [cloud-agent:] section add this:
-
+```
       expose:
 
       - "8085"
@@ -180,9 +180,9 @@ Here the changes:
     # ports:
 
     #   - "${PORT}:9080/tcp"
-
+```
   - at the bottom of the file, add this:
-
+```
       networks:
 
         default:
@@ -192,7 +192,7 @@ Here the changes:
         nginx-proxy:
 
           external: true
-  
+```
   - Use Internal Docker DNS: Update the Cloud Agent's environment variables to use the internal Docker service name instead of host.docker.internal:
 
   POLLUX_STATUS_LIST_REGISTRY_PUBLIC_URL: http://apisix:9080/cloud-agent
