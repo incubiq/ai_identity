@@ -141,6 +141,14 @@ const async_getFirstHolderVCMatchingType = async function (objParam) {
 // custodial full issuance (with issuer and holder actions) 
 const async_createCustodialCredential = async function (objParam) {
     try {
+        // data check
+        if(!objParam.didPeer1 || !objParam.didPeer2 || !objParam.keyPeer1 || !objParam.keyPeer2 || !objParam.connection || !objParam.claims) {
+            throw({
+                data:null,
+                status: 400,
+                statusText: "Bad data for creation of custodial Creds"
+            })
+        }
         // we have a custodial context, we can do all in one go
 
         // ensure claim is in JSON format 

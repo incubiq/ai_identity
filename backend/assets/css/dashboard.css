@@ -1,8 +1,13 @@
 /*!
  */
  html * {
-  -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+ }
+
+ .page {
+  padding-top: 64px;
  }
 
  .header {
@@ -12,6 +17,10 @@
   box-shadow: 0 4px 18px 0px rgba(0, 0, 0, 0.12), 0 7px 10px -5px rgba(0, 0, 0, 0.15);
   margin-bottom: 20px;
   background-color: #FFF !important;
+  position: fixed;
+  top: 10px;
+  width: calc(100% - 16px);
+  z-index: 1000;
  }
 
  .footer {
