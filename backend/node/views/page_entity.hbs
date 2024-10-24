@@ -39,9 +39,14 @@
       <ul>
         {{#each param.aConnect}}            
           <li>
-            <span>{{label}}:</span> 
-            <span >({{state}})</span>
-            <span > - {{createdAt}}</span>
+            <span>{{label}} ({{createdAt}}):</span> 
+            
+            <ul>
+            <li>id: {{connectionId}}</li>
+            <li>role: {{role}}</li>
+            <li>state: {{state}}</li>
+            </ul>
+
           </li>
         {{/each}}
       </ul>

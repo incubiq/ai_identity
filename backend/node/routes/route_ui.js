@@ -5,6 +5,7 @@ const jsonwebtoken = require("jsonwebtoken");
 const utilIdentity = require('../utils/util_identus_identity');
 const utilConnection = require('../utils/util_identus_connections');
 const utilProof = require('../utils/util_identus_proof');
+const utilCardano = require('../utils/util_cardano');
 
 
 /*
@@ -30,20 +31,19 @@ const utilProof = require('../utils/util_identus_proof');
     }
 
     // JWT signed payload to authenticate into SIWW
-    async function async_addSecretToCookie(req) {
+    async function async_addSecretToCookie(req, id, secret) {
         try {
-            const secret = req.body && req.body.secret? req.body.secret : null;
             dataPayload=await async_getInfoFromCookie(req, getCookieName());
             if(dataPayload && dataPayload.data) {
                 dataPayload.data.aEntity.push({
-                    id: req.params.id,
+                    id: id,
                     secret: secret
                 })
             }
             else {
                 dataPayload.data={
                     aEntity: [{
-                        id: req.params.id,
+                        id: id,
                         secret: secret
                     }]}
             }
@@ -259,6 +259,54 @@ router.get("/static/entity/:id", function(req, res, next) {
     })
 });
 
+router.get("/static/entity_create", function(req, res, next) {
+    res.render("page_entity_create",{
+        config: gConfig,
+        layout: 'layout',
+        url: "/entity_create",
+        metadata: {
+            type: "article",
+            pathname: req.route.path,
+            author: gConfig.email,
+            keywords: gConfig.appName,
+            description: "",
+            title: gConfig.appDisplayName,
+            theme_color: gConfig.theme_color
+        },
+        param: {}
+    });
+});
+
+router.post("/static/entity_create", function(req, res, next) {    
+    const name = req.body && req.body.name && req.body.name!=""? req.body.name : null;
+    const role = req.body && req.body.role && req.body.role!=""? req.body.role : null;
+    utilCardano.generateSeedPhrase()
+    .then(dataM => {
+        utilIdentity.async_createEntityWithAuth({
+            name: name,
+            role: role,
+            mnemonic: dataM.data.mnemonic
+        })
+        .then(data => {
+            if (data.data) {
+                async_addSecretToCookie(req, data.data.id_entity, data.data.key)
+                .then(_cookie => {
+                    res.cookie(getCookieName(), _cookie, getCookieOptions());       // store this cookie
+                    res.redirect("/static/entity/"+data.data.id_entity);            
+                })
+                .catch(err => {throw err})
+            }
+        })
+        .catch(err => {
+            throw err;
+        })    
+    })
+    .catch(err => {
+        res.redirect("/static/entity_create");
+    })    
+
+});
+
 router.post("/static/entity/:id/secret", function(req, res, next) {
     // we need to test secret first (it it the correct one?)
     const secret = req.body && req.body.secret? req.body.secret : null;
@@ -267,7 +315,7 @@ router.post("/static/entity/:id/secret", function(req, res, next) {
     })
     .then(data => {
         if (data.data.length>0) {
-            async_addSecretToCookie(req)
+            async_addSecretToCookie(req, req.params.id, req.body.secret)
             .then(_cookie => {
                 res.cookie(getCookieName(), _cookie, getCookieOptions());       // store this cookie
                 res.redirect("/static/entity/"+req.params.id);            
