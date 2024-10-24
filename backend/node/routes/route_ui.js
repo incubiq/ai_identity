@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jsonwebtoken = require("jsonwebtoken");
+const jwtDecode = require('jwt-decode');
 
 const utilIdentity = require('../utils/util_identus_identity');
 const utilConnection = require('../utils/util_identus_connections');
@@ -117,6 +118,7 @@ const utilCardano = require('../utils/util_cardano');
             let dataDid=null;
             let dataConnect=null;
             let dataProof=null;
+            let aDecodedProofs=null;
             let dataE=await utilIdentity.async_getEntityById({
                 entity: id
             });
@@ -136,8 +138,28 @@ const utilCardano = require('../utils/util_cardano');
                 catch(err){}
 
                 try {
+
                     dataProof = await utilProof.async_getAllVCPresentationRequests({key: key})
                     if(dataProof.data && dataProof.data.length==0) {dataProof.data=null}
+                    else {
+                        // decode the proof for each
+                        aDecodedProofs=[];
+                        dataProof.data.forEach(item => {
+                            const decoded_wrapper = jwtDecode(item.data[0]);
+                            const encoded_proof=decoded_wrapper.vp.verifiableCredential[0];
+                            const decoded_proof = jwtDecode(encoded_proof);
+                            if(decoded_proof && decoded_proof.vc && decoded_proof.vc.credentialSubject) {
+//                                item.decoded = decoded_proof.vc.credentialSubject;
+                                const context = {
+                                    items: Object.entries(decoded_proof.vc.credentialSubject).map(([key, value]) => ({ key, value })),
+                                  };
+                                item.claims=context.items;
+                            }
+
+                            aDecodedProofs.push(item);
+                        })
+
+                    }
                 }
                 catch(err){}
             }
@@ -146,7 +168,7 @@ const utilCardano = require('../utils/util_cardano');
                 entity: dataE? dataE.data: null,
                 aDid: dataDid? dataDid.data: null,
                 aConnect: dataConnect? dataConnect.data: null,
-                aProof: dataProof? dataProof.data: null,
+                aProof: aDecodedProofs,
             }
         }
         catch (err) {throw err}

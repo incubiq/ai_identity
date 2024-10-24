@@ -58,11 +58,22 @@
       <h3>Proofs</h3>
       <ul>
         {{#each param.aProof}}            
-          <li>
-            <span>{{label}}:</span> 
-            <span >({{state}})</span>
-            <span > - {{createdAt}}</span>
-          </li>
+          <li>Proof {{thid}}</li>          
+          <ul>
+            <li>connection: {{connectionId}}:</li> 
+            <li>presentation: {{presentationId}}:</li> 
+            <li >status: {{status}}</li>
+            <li >role: {{role}}</li>
+
+            {{#if claims}}
+            <li >content: </li>
+              <ul>
+              {{#each claims}}            
+                <li>{{key}}: {{value}}</li>
+              {{/each}}
+              </ul>
+            {{/if}}
+          </ul>
         {{/each}}
       </ul>
     {{else}}
