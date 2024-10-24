@@ -45,8 +45,8 @@ const async_createCustodialConnection = async function(objParam) {
             from: objParam.namePeer1 + " for "+objParam.namePeer2
         });
 
-        // wait 1500ms before this call (or it may very well fail)
-        await srvIdentusUtils.wait(1500);
+        // wait before this call (or it may very well fail)
+        await srvIdentusUtils.wait(gConfig.identus.delay);
 
         // peer 2 accepts the connection invite
         let _oob=_dataInvite.data.invitation.invitationUrl.replace("https://my.domain.com/path?_oob=","");
@@ -56,8 +56,8 @@ const async_createCustodialConnection = async function(objParam) {
         });
         let _connectionIdForInvitee=_dataAccept.data.connectionId;        
 
-        // wait 4000ms before this call (or it may very well fail)
-        await srvIdentusUtils.wait(4000);
+        // wait before this call (or it may very well fail)
+        await srvIdentusUtils.wait(gConfig.identus.delay);
 
         // frompoint of view of peer1, get back the final connection and status
         let _dataFinal=await async_getConnectionById({

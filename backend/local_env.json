@@ -1,6 +1,6 @@
 {
     "PROD":   false,
-    "IDENTUS_ADMIN" :  "my-secret",
+    "IDENTUS_ADMIN" :  "my-secret-4osais",
     "IDENTUS_DELAY" : 4000,
     "IDENTUS_DEFAULT_VALIDITY" : 2592000,
     "IDENTUS_HOST" :  "http://identus.opensourceais.com/",
