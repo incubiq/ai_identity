@@ -1,6 +1,6 @@
 {
     "PROD":   false,
-    "IDENTUS_ADMIN" :  "my-admin-token",
+    "IDENTUS_ADMIN" :  "my-secret",
     "IDENTUS_DELAY" : 4000,
     "IDENTUS_DEFAULT_VALIDITY" : 2592000,
     "IDENTUS_HOST" :  "http://localhost:8100/",
