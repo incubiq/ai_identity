@@ -4,6 +4,16 @@
 <br />
 {{#if param.items.length}}
   <div class="grid">
+    <div  class ="item">
+      <br />
+      <br />
+      <div >
+        <a class="button selected"  href="/static/entity_create">
+          Create a new Entity...
+        </a>
+        </div>
+      <br />
+    </div>
     {{#each param.items}}    
     <div class ="item">
       <p><b>{{name}}</b></p>
@@ -16,8 +26,7 @@
         <li>ID: {{id}}</li>
         <li>date created: {{createdAt}}</li>
         {{#if key}} 
-        <li><a href="/static/entity/{{id}}">access DIDs</a></li>
-        <li><a href="/static/proof/{{id}}">access Proofs</a></li>
+          <a href="/static/entity/{{id}}">access entity...</a>
         {{else}}
           <a href="/static/entity/{{id}}">provide key to access data...</a>
         {{/if}}

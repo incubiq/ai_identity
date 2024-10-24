@@ -149,7 +149,12 @@ Here the changes:
         nginx-proxy:
           external: true
   
- - add the "identus" subdomain in your DNS
+  - Use Internal Docker DNS: Update the Cloud Agent's environment variables to use the internal Docker service name instead of host.docker.internal:
+  POLLUX_STATUS_LIST_REGISTRY_PUBLIC_URL: http://apisix:9080/cloud-agent
+  DIDCOMM_SERVICE_URL: http://apisix:9080/didcomm
+  REST_SERVICE_URL: http://apisix:9080/cloud-agent
+
+  - add the "identus" subdomain in your DNS
 
 How to test it:
  curl -H "Host: identus.opensourceais.com" http://localhost/cloud-agent/_system/health
