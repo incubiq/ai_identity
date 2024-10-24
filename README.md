@@ -69,15 +69,21 @@ After this pre-install, it should work with those commands
 
 // with v1.31.0  (last PRISM Agent)
 
+```
 DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 PRISM_AGENT_VERSION=1.31.0 PRISM_NODE_VERSION=2.2.1 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
+```
 
 // with v1.39.1 (latest Identus agent -- note : keep 1.39.0 in VERSION= or it will fail...)
 
+```
 DOCKERHOST=host.docker.internal ADMIN_TOKEN=my-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 AGENT_VERSION=1.39.0 PRISM_NODE_VERSION=2.3.0 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml  up --wait
+```
 
 // to shut it down: 
 
+```
 docker compose -p "issuer"  -f ./infrastructure/shared/docker-compose.yml down 
+```
 
 
 // to tunnel the local Identity Cloud:
@@ -86,11 +92,11 @@ cloudflared tunnel --url http://localhost:8100
 
 
 // to inspect
+```
  docker logs issuer-prism-agent-1 
-
  docker volume rm issuer_pg_data_db
-
  docker volume prune
+```
 
 
 // to clear the DB and restart from scratch  (after a compose down)
@@ -112,17 +118,19 @@ cloudflared tunnel --url http://localhost:8100
  - git clone https://github.com/hyperledger/identus-cloud-agent.git
  - in /identus-cloud-agent, create a .reset_identus.sh with this content: 
 
- docker compose -p "issuer"  -f ./identus-cloud-agent/infrastructure/shared/docker-compose.yml down 
+ ```
+docker compose -p "issuer"  -f ./identus-cloud-agent/infrastructure/shared/docker-compose.yml down 
  
  DOCKERHOST=host.docker.internal ADMIN_TOKEN=change-this-admin-token API_KEY_ENABLED=true API_KEY_AUTO_PROVISIONING=false API_KEY_AUTHENTICATE_AS_DEFAULT_USER=false DEFAULT_WALLET_ENABLED=false PORT=8100 AGENT_VERSION=1.39.0 PRISM_NODE_VERSION=2.3.0 VAULT_DEV_ROOT_TOKEN_ID=root PG_PORT=5432  docker compose -p "issuer"  -f ./identus-cloud-agent/infrastructure/shared/docker-compose.yml  up --wait
+```
 
  - add a nginx proxy in reverse mode: 
 
+```
 sudo docker network rm nginx-proxy
-
 sudo docker network create nginx-proxy
-
 sudo docker run -d -p 80:80 -p 443:443 --name nginx-proxy --net nginx-proxy -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+```
 
  - The docker-compose.yml of the agent needs updates...
 
@@ -144,55 +152,42 @@ Security benefits of this setup:
 
 Here the changes:
    - at the end of the  [cloud-agent:] section add this:
+
 ```
       expose:
-
       - "8085"
-
       - "8090"
-
       networks:
-
       - default
-
       - nginx-proxy
+```
 
    - at the end of the  [apisix:] section add this:
 
+```
       environment:
-
         VIRTUAL_HOST: identus.opensourceais.com ## add your identus hosted domain here
-
         VIRTUAL_PORT: 9080
-
       expose:
-
         - "9080"  
-
       networks:
-
         - default
-
         - nginx-proxy
-
     # comment the ports
-
     # ports:
-
     #   - "${PORT}:9080/tcp"
 ```
+
   - at the bottom of the file, add this:
+
 ```
       networks:
-
         default:
-
           name: issuer-default
-
         nginx-proxy:
-
           external: true
 ```
+
   - Use Internal Docker DNS: Update the Cloud Agent's environment variables to use the internal Docker service name instead of host.docker.internal:
 
   POLLUX_STATUS_LIST_REGISTRY_PUBLIC_URL: http://apisix:9080/cloud-agent
