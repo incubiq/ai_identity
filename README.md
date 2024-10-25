@@ -11,6 +11,7 @@
  1b/ (April):
  - video report: https://youtu.be/u_ufSn_7UR8 
  - project specs: https://github.com/incubiq/ai_identity/blob/main/specs.txt
+ - link to change request: https://github.com/incubiq/ai_identity/blob/main/1100164%20-%20Change%20request.pdf
 
  2/ (June):
  - video report: https://youtu.be/tG_X_iB81TQ 
@@ -25,8 +26,9 @@
  - Identity Node repo updated with a UI to access Identus and list all Entities and their attributes
  - Identus runing on AWS (identus.OpenSourceAIs.com) in testnet
  - Identity Cloud Agent running as Prod ready on AWS (identity.OpenSourceAIs.com)
- - final video closing report: <URL>
- - final closeout report: <URL>
+ - video report: https://youtu.be/RL9bolGYcEU
+ - final video closing https://youtu.be/cdO7TyDPtqg
+ - final closeout report: https://github.com/incubiq/ai_identity/blob/main/1100164%20-%20Closing%20report.pdf
 
 # Identus test scripts
  - up to date in repo
