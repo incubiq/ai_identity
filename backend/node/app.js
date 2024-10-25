@@ -9,7 +9,8 @@ const srvIdentusUtil = require("./utils/util_identus_utils");
 
     module.exports = {
         createApp,
-        async_initializeApp
+        async_initializeApp,
+        async_pingIdentus
     };
 
     function createApp() {
@@ -60,24 +61,30 @@ const srvIdentusUtil = require("./utils/util_identus_utils");
             initializeRedirections(app);
             initializeRoutes(app);
             initializeViews(app);     
-
-            // test Identus agent connection
-            try {
-                await srvIdentus.async_getEntities();
-                srvUtil.consoleLog("Identus is ready at "+gConfig.identus.host);
-            }
-            catch(err) {
-                if(err && err.response &&  err.response.status && err.response.status==401) {
-                    srvUtil.consoleLog("Critical: not authorised as Admin (probably a bad admin pwd) ")
-                }
-                srvUtil.consoleLog("FATAL: Identus not found at "+gConfig.identus.host + "("+(err.code? err.code: "") + " "+ (err.errno? err.errno: "") + " "+(err.message? err.message:"") + ")" )
-//                throw err;
-            }
+            async_pingIdentus();
         }
         catch(err) {
             srvUtil.consoleLog(err && err.message? err.message : err.statusText);
             throw err;
         }
+    }
+
+    async function async_pingIdentus() {
+            // test Identus agent connection
+            try {
+                await srvIdentus.async_getEntities();
+                srvUtil.consoleLog("Identus is ready at "+gConfig.identus.host);
+                gConfig.identus.isLive=true;
+                return true;
+            }
+            catch(err) {
+                gConfig.identus.isLive=false;
+                if(err && err.response &&  err.response.status && err.response.status==401) {
+                    srvUtil.consoleLog("Critical: not authorised as Admin (probably a bad admin pwd) ")
+                }
+                srvUtil.consoleLog("FATAL: Identus not found at "+gConfig.identus.host + "("+(err.code? err.code: "") + " "+ (err.errno? err.errno: "") + " "+(err.message? err.message:"") + ")" )
+                return false;
+            }
     }
 
 /*
