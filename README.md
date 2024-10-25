@@ -126,7 +126,7 @@ docker compose -p "issuer"  -f ./identus-cloud-agent/infrastructure/shared/docke
 ```
 sudo docker network rm nginx-proxy
 sudo docker network create nginx-proxy
-sudo docker run -d -p 80:80 -p 443:443 --name nginx-proxy --net nginx-proxy -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+sudo docker run -d -p 80:80 -p 443:443 --name nginx-proxy --net nginx-proxy -v /var/run/docker.sock:/tmp/docker.sock:ro -e ENABLE_IPV6=true jwilder/nginx-proxy
 ```
 
  - The docker-compose.yml of the agent needs updates...
@@ -176,7 +176,6 @@ At the bottom of the file, add this:
 ```
       networks:
         default:
-          name: issuer-default
         nginx-proxy:
           external: true
 ```
@@ -197,7 +196,7 @@ How to test it:
  curl -H "Host: identus.opensourceais.com" http://localhost/cloud-agent/_system/health
 ```
 
-NOTE : this is a config for HTTP (not for HTTPS). Assuming a cloudflare SSL / Edge certificate
+NOTE : this is a config for HTTP, where HTTPS is managed by cloudflare
 
 # Other/Misc helpers for wsl
 
