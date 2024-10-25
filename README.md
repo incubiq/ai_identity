@@ -21,8 +21,12 @@
  - Identus issues reported
  - video report: https://youtu.be/n1ZpTRr5Mhw
 
- 4/ (planned for Dec)
-
+ 4/ (Oct)
+ - Identity Node repo updated with a UI to access Identus and list all Entities and their attributes
+ - Identus runing on AWS (identus.OpenSourceAIs.com) in testnet
+ - Identity Cloud Agent running as Prod ready on AWS (identity.OpenSourceAIs.com)
+ - final video closing report: <URL>
+ - final closeout report: <URL>
 
 # Identus test scripts
  - up to date in repo
