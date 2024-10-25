@@ -3,6 +3,7 @@ const router = express.Router();
 const jsonwebtoken = require("jsonwebtoken");
 const jwtDecode = require('jwt-decode');
 
+const module_app = require('../app')
 const utilIdentity = require('../utils/util_identus_identity');
 const utilConnection = require('../utils/util_identus_connections');
 const utilProof = require('../utils/util_identus_proof');
@@ -196,6 +197,7 @@ const renderError = function (req, res) {
         }
     });
 }
+
 // homepage
 router.get("/", function(req, res, next) {
     res.render("page_home",{
@@ -213,9 +215,21 @@ router.get("/", function(req, res, next) {
         },
         param: {
         }
-    });
+    });    
 });
 
+// reconnect to identus
+router.get("/refresh", function(req, res, next) {
+    module_app.async_pingIdentus()
+    .then(data => {
+        res.redirect("/");    
+    })
+    .catch(err => {
+        renderError(req, res)
+    })
+});
+
+// list all entities
 router.get("/static/entities", function(req, res, next) {
     async_getInfoFromCookie(req)
     .then(data=> {

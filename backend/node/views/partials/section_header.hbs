@@ -1,12 +1,15 @@
 
 <nav class="header">
-    <div class="button" style="color: #ccc; cursor: default; ">Cloud Identity Agent</div>
+    <a class="button" style="color: {{#if config.identus.isLive}}green{{else}}red{{/if}};" href="/refresh">
+        {{#if config.identus.isLive}}Identity agent{{else}}Identus is OFFLINE{{/if}}
+    </a>
     <a class="button {{#ifCond url "==" "/"}}selected{{/ifCond}}" href="/" >
         HOME
     </a>
 
+{{#if config.identus.isLive}}
     <a class="button {{#ifCond url "==" "/entities"}}selected{{/ifCond}}" href="/static/entities">
         ENTITIES
     </a>
-
+{{/if}}
 </nav>
