@@ -98,7 +98,7 @@ cloudflared tunnel --url http://localhost:8100
 
 // to clear the DB and restart from scratch  (after a compose down)
 
-... todo...
+Change the multi-tenant secret
 
 
 // to check for health
