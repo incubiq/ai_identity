@@ -27,7 +27,7 @@ routes:
     plugins:
       proxy-rewrite:
         regex_uri: ["^/apidocs/(.*)", "/$1"]
-
+ 
 upstreams:
   - id: 3
     nodes:
