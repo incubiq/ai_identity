@@ -2,6 +2,53 @@
 version: "3.8"
 
 services:
+
+  ##########################
+  # nginx
+  ##########################
+  context-server: # New Nginx service
+    image: nginx:alpine
+    volumes:
+      # Mount your contexts directory to where Nginx will serve them
+      - ./contexts:/usr/share/nginx/html/contexts:ro
+      - ./nginx/context-ssl.conf:/etc/nginx/conf.d/default.conf:ro # Mount your Nginx config
+      - ./nginx/certs:/etc/nginx/certs:ro # Mount your SSL certs
+    ports:
+      # Expose 443 so cloud-agent can talk to it (if needed from host)
+      - "8891:443"
+    networks:
+      default:
+        aliases:
+          - www.w3.org # This is crucial: www.w3.org will now resolve to this Nginx server
+          - w3.org
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://localhost/2018/credentials/v1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+#  simple-context-server:
+#    image: python:3.9-alpine
+#    working_dir: /contexts
+#    volumes:
+#      - ./contexts:/contexts:ro
+#    command: python -m http.server 80
+#    ports:
+#      - "8890:80"
+#    networks:
+#      default:
+#        aliases:
+#          - www.w3.org
+#          - w3.org
+#    healthcheck:
+#      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:80/2018/credentials/v1')"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 5s
+
+
   ##########################
   # Database
   ##########################
@@ -71,7 +118,11 @@ services:
       retries: 5
 
   cloud-agent:
-    image: ghcr.io/hyperledger/identus-cloud-agent:${AGENT_VERSION}
+    build:
+      context: ./cloud-agent-custom-docker/ # Path to your Dockerfile and www.w3.org.crt
+      args:
+        AGENT_VERSION: ${AGENT_VERSION} # Pass AGENT_VERSION to the Dockerfile
+    # image: ghcr.io/hyperledger/identus-cloud-agent:${AGENT_VERSION}
     environment:
       POLLUX_DB_HOST: db
       POLLUX_DB_PORT: 5432
@@ -88,9 +139,10 @@ services:
       AGENT_DB_NAME: agent
       AGENT_DB_USER: postgres
       AGENT_DB_PASSWORD: postgres
-      POLLUX_STATUS_LIST_REGISTRY_PUBLIC_URL: http://${DOCKERHOST}:${PORT}/cloud-agent
-      DIDCOMM_SERVICE_URL: http://${DOCKERHOST}:${PORT}/didcomm
-      REST_SERVICE_URL: http://${DOCKERHOST}:${PORT}/cloud-agent
+      POLLUX_STATUS_LIST_SYNC_ENABLED: "false"
+      POLLUX_STATUS_LIST_REGISTRY_PUBLIC_URL: http://apisix:9080/cloud-agent
+      DIDCOMM_SERVICE_URL: http://apisix:9080/didcomm
+      REST_SERVICE_URL: http://apisix:9080/cloud-agent
       PRISM_NODE_HOST: prism-node
       PRISM_NODE_PORT: 50053
       VAULT_ADDR: ${VAULT_ADDR:-http://vault-server:8200}
@@ -110,6 +162,21 @@ services:
       API_KEY_ENABLED:
       API_KEY_AUTHENTICATE_AS_DEFAULT_USER:
       API_KEY_AUTO_PROVISIONING:
+      JSONLD_CONTEXT_CACHE_ENABLED: true
+      JSONLD_CONTEXT_CACHE_SIZE: 100
+      JSONLD_CONTEXT_CACHE_TTL: 3600000
+      JSONLD_DOCUMENT_LOADER_CACHE_ENABLED: true
+      JSONLD_CONTEXT_LOCAL_PATH: /app/contexts
+      HTTP_CLIENT_TIMEOUT: 30000
+      HTTP_CLIENT_RETRY_COUNT: 3
+      HTTP_CLIENT_RETRY_DELAY: 2000
+      ## lower security of JV< (Identus still gives problem on POST)
+      JAVA_TOOL_OPTIONS: "-Dcom.apicatalog.jsonld.document.loader.http.accept=application/ld+json  -Dcom.apicatalog.jsonld.http.loader.default.protocol=http  -Djava.net.preferIPv4Stack=true -Djdk.httpclient.HttpClient.log=all  -Djava.net.Debug=all  -Djava.util.logging.config.file=/dev/null"
+      JSONLD_DOCUMENT_LOADER_HTTP_SCHEME: "http"
+      JSONLD_CONTEXT_RESOLVER_SCHEME: "http"
+      # JAVA_TOOL_OPTIONS: "-Dcom.apicatalog.jsonld.http.loader.default.scheme=http -Djava.net.preferIPv4Stack=true -Djsonld.remote.context.https://www.w3.org/2018/credentials/v1=http://apisix:9080/2018/credentials/v1.jsonld -Djdk.httpclient.HttpClient.log=all -Djava.util.logging.config.file=/dev/null -Djava.net.Debug=all"
+      # Optional: Disable strict context validation for connections
+      STRICT_CONTEXT_VALIDATION: false
     depends_on:
       db:
         condition: service_healthy
@@ -117,6 +184,12 @@ services:
         condition: service_started
       vault-server:
         condition: service_healthy
+#      simple-context-server:
+#        condition: service_healthy
+      context-server: # Depend on the new Nginx context server
+        condition: service_healthy
+#    entrypoint: /usr/local/bin/cloud-agent-entrypoint.sh # This tells Docker to run our script first
+#    command: sleep infinity 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://cloud-agent:8085/_system/health"]
       interval: 30s
@@ -124,6 +197,23 @@ services:
       retries: 5
     extra_hosts:
       - "host.docker.internal:host-gateway"
+#      - "www.w3.org:host.docker.internal"
+#      - "www.w3.org:172.17.0.1"
+#      - "www.w3.org:context-server"
+#      - "www.w3.org:104.16.132.229"  # Backup IP for W3C
+    expose:
+      - "8085"
+      - "8090"
+    networks:
+      - default
+      - nginx-proxy
+    volumes:
+      - ./contexts:/app/contexts:ro
+#      - ./cloud-agent-entrypoint.sh:/usr/local/bin/cloud-agent-entrypoint.sh:ro
+#      - ./nginx/certs:/certs:ro 
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
 
   swagger-ui:
     image: swaggerapi/swagger-ui:v5.1.0
@@ -134,11 +224,20 @@ services:
 
   apisix:
     image: apache/apisix:2.15.0-alpine
+    environment:
+      VIRTUAL_HOST: identus.opensourceais.com
+      VIRTUAL_PORT: 9080
+    expose:
+      - "9080"
     volumes:
       - ./apisix/conf/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro
       - ./apisix/conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+      - ./contexts:/home/ubuntu/identus-cloud-agent/infrastructure/shared/contexts:ro
     ports:
       - "${PORT}:9080/tcp"
+    networks:
+      - default
+      - nginx-proxy
     depends_on:
       - cloud-agent
       - swagger-ui
@@ -146,6 +245,12 @@ services:
 volumes:
   pg_data_db:
   pgadmin:
+
+networks:
+  default:
+  nginx-proxy:
+    external: true
+
 # Temporary commit network setting due to e2e CI bug
 # to be enabled later after debugging
 #networks:
